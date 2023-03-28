@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="weather_forecast_app">Weather Forecast App</string>
+    <string name="please_enter_location">Please Enter Location</string>
+    <string name="or">Or....</string>
+    <string name="turn_on_current_location">Turn on Current Location</string>
+    <string name="OpenWeather_api">OpenWeather API</string>
+</resources>
