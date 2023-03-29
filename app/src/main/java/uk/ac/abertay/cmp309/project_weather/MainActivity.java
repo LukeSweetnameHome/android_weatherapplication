@@ -4,9 +4,15 @@ import static uk.ac.abertay.cmp309.project_weather.R.id.getWeatherButton;
 import static uk.ac.abertay.cmp309.project_weather.R.id.titleTextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -95,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                         String clouds = jsonObjectClouds.getString("all");
                         JSONObject jsonObjectSys = jsonResponse.getJSONObject("sys");
                         String locationName = jsonResponse.getString("name");
-                        output += "Current weather of " + locationName;
+                        //output += "Current weather of " + locationName
+                        //       + "\n Temp: " + df.format(temp) + "C";
 
                         Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
                         intent.putExtra("json_response", jsonResponse.toString());
@@ -128,12 +135,34 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Toast.makeText(this, "The switch is " + (isChecked ? "on" :"off"), Toast.LENGTH_SHORT).show();
-        if(isChecked) {
-            // carry out current location activity
-        } else {
-            Toast.makeText(this, "Please fill in location field or check the current location switch.", Toast.LENGTH_SHORT).show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
+                }
+                Toast.makeText(this, "The switch is " + (isChecked ? "on" : "off"), Toast.LENGTH_SHORT).show();
+                if (isChecked) {
+                    // carry out current location activity
+                } else {
+                    Toast.makeText(this, "Please fill in location field or check the current location switch.", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
 
+    }
+    private boolean isGPSEnabled() {
+        LocationManager locationManager = null;
+        boolean isEnabled = false;
+
+        if (locationManager == null){
+            locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        }
+
+        isEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        return isEnabled;
     }
 }

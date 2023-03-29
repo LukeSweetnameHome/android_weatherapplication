@@ -18,8 +18,10 @@ public class WeatherActivity extends AppCompatActivity {
         String jsonResponseString = getIntent().getStringExtra("json_response");
         try {
             JSONObject jsonResponse = new JSONObject(jsonResponseString);
+
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
     }
 }
