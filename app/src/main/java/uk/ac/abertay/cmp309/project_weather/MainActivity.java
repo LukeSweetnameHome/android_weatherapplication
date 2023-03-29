@@ -13,6 +13,7 @@ import android.location.LocationManager;
 import android.location.LocationRequest;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -29,6 +30,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.location.LocationSettingsRequest;
@@ -53,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private com.google.android.gms.location.LocationRequest locationRequest;
     private Intent myIntent;
     TextView textView2, titleTextView;
+    private TextView addressText;
+
     private final String url = "http://api.openweathermap.org/data/2.5/weather";
     private final String appid = "4e2322456db9e681dcd39712eb48af6b";
     DecimalFormat df = new DecimalFormat("#.#");
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         myIntent = new Intent(this, WeatherActivity.class);
 
         Switch currentLocationSwitch;
+        addressText = findViewById(R.id.addressText);
 
         locationRequest = com.google.android.gms.location.LocationRequest.create();
         locationRequest.setPriority(com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -153,25 +159,42 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         Toast.makeText(this, "The switch is " + (isChecked ? "on" : "off"), Toast.LENGTH_SHORT).show();
         if (isChecked) {
             // carry out current location activity
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-                        if (isGPSEnabled()) {
+                    if (isGPSEnabled()) {
+                        Toast.makeText(this, "GPS is enabled", Toast.LENGTH_SHORT).show();
+                        LocationServices.getFusedLocationProviderClient(MainActivity.this)
+                                .requestLocationUpdates(locationRequest, new LocationCallback() {
+                                    @Override
+                                    public void onLocationResult(@NonNull LocationResult locationResult) {
+                                        super.onLocationResult(locationResult);
 
-                        } else {
-                            turnOnGPS();
-                        }
+                                        LocationServices.getFusedLocationProviderClient(MainActivity.this)
+                                                .removeLocationUpdates(this);
+
+                                        if (locationResult != null && locationResult.getLocations().size() > 0){
+
+                                            int index = locationResult.getLocations().size() - 1;
+                                            double latitude = locationResult.getLocations().get(index).getLatitude();
+                                            double longitude = locationResult.getLocations().get(index).getLongitude();
+
+                                            addressText.setText("Latitude: "+ latitude + "/n" + "Longitude: "+ longitude);
+                                        }
+                                    }
+                                }, Looper.getMainLooper());
 
                     } else {
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
+                        turnOnGPS();
                     }
 
-        } else {
-            Toast.makeText(this, "Please fill in location field or check the current location switch.", Toast.LENGTH_SHORT).show();
-        }
-            }
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                }
+
+    } else {
+        Toast.makeText(this, "Please fill in location field or check the current location switch.", Toast.LENGTH_SHORT).show();
+    }
         }
 
     }
