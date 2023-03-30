@@ -9,11 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -57,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private Intent myIntent;
     TextView textView2, titleTextView;
     private TextView addressText;
+    private static final String TAG = "MainActivity";
+
 
     private final String url = "http://api.openweathermap.org/data/2.5/weather";
     private final String appid = "4e2322456db9e681dcd39712eb48af6b";
@@ -161,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             // carry out current location activity
             if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "All permissions granted", Toast.LENGTH_SHORT).show();
 
                 if (isGPSEnabled()) {
                     Toast.makeText(this, "GPS is enabled", Toast.LENGTH_SHORT).show();
@@ -169,6 +174,16 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                 @Override
                                 public void onLocationResult(@NonNull LocationResult locationResult) {
                                     super.onLocationResult(locationResult);
+                                    Log.d(TAG, "onLocationResult: location result received");
+                                    if (locationResult == null) {
+                                        Log.d(TAG, "onLocationResult: location result is null");
+                                        return;
+                                    }
+
+                                    // Log the latitude and longitude values
+                                    for (Location location : locationResult.getLocations()) {
+                                        Log.d(TAG, "onLocationResult: latitude=" + location.getLatitude() + ", longitude=" + location.getLongitude());
+                                    }
 
                                     LocationServices.getFusedLocationProviderClient(MainActivity.this)
                                             .removeLocationUpdates(this);
@@ -185,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             }, Looper.getMainLooper());
 
                 } else {
+                    Toast.makeText(this, "GPS is not on", Toast.LENGTH_SHORT).show();
                     turnOnGPS();
                 }
 
