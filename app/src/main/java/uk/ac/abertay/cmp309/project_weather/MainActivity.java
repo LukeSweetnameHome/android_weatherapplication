@@ -52,6 +52,7 @@ import java.text.DecimalFormat;
 // http://api.openweathermap.org/
 // http://api.openweathermap.org/data/2.5/weather?q=London,UK&APPID=4e2322456db9e681dcd39712eb48af6b
 // http://api.openweathermap.org/?=London,&api=4e2322456db9e681dcd39712eb48af6b
+
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     EditText editTextLocationName;
     private Switch currentLocationSwitch;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private TextView addressText;
     private static final String TAG = "MainActivity";
 
+    private double latitude;
+    private double longitude;
 
     private final String url = "http://api.openweathermap.org/data/2.5/weather";
     private final String appid = "4e2322456db9e681dcd39712eb48af6b";
@@ -99,11 +102,17 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         String tempUrl = "";
         String location = editTextLocationName.getText().toString().trim();
         StringRequest stringRequest = null;
+        // https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={API key}
         if (location.isEmpty()) {
             Toast.makeText(this, "Please fill in the Location field, or check the current location switch.", Toast.LENGTH_SHORT).show();
         } else {
             if (!location.isEmpty()) {
                 tempUrl = url + "?q=" + location + "," + "&appid=" + appid;
+            }
+            else {
+                if (location.isEmpty() && (currentLocationSwitch.isChecked())) {
+                    tempUrl = url + "?lat=" + latitude + "&lon=" + longitude + "&appid=" + appid;
+                }
             }
             stringRequest = new StringRequest(Request.Method.POST, tempUrl, new Response.Listener<String>() {
                 @Override
@@ -264,4 +273,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         isEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         return isEnabled;
     }
+
+
 }
