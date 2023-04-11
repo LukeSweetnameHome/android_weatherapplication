@@ -78,15 +78,45 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         myIntent = new Intent(this, WeatherActivity.class);
 
-        Switch currentLocationSwitch;
         addressText = findViewById(R.id.addressText);
 
         locationRequest = com.google.android.gms.location.LocationRequest.create();
         locationRequest.setPriority(com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(2000);
+        /*LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(2000);*/
 
-        currentLocationSwitch = (Switch) findViewById(R.id.currentLocationSwitch);
+        // start of new
+        LocationCallback locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                }
+            }
+        };
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+        // end of new
+
+        currentLocationSwitch = findViewById(R.id.currentLocationSwitch);
         if (currentLocationSwitch != null) {
             currentLocationSwitch.setOnCheckedChangeListener(this);
         }
@@ -98,63 +128,62 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     public void getWeatherDetails(View view) {
-
-        String tempUrl = "";
+        String tempUrl;
         String location = editTextLocationName.getText().toString().trim();
-        StringRequest stringRequest = null;
-        // https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={API key}
-        if (location.equals("")) {
+
+        if (location.equals("") && !currentLocationSwitch.isChecked()) {
             Toast.makeText(this, "Please fill in the Location field, or check the current location switch.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (currentLocationSwitch != null && currentLocationSwitch.isChecked()) {
+            Log.d("MainActivity", "location: " + location);
+            // start of new
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (lastKnownLocation != null) {
+                latitude = lastKnownLocation.getLatitude();
+                longitude = lastKnownLocation.getLongitude();
+            }
+            // end of new
+            tempUrl = url + "?lat=" + latitude + "&lon=" + longitude + "&appid=" + appid;
         } else {
-            if (!location.isEmpty()) {
-                tempUrl = url + "?q=" + location + "," + "&appid=" + appid;
-            }
-            else {
-                if (currentLocationSwitch.isChecked()) {
-                    tempUrl = url + "?lat=" + latitude + "&lon=" + longitude + "&appid=" + appid;
-                }
-            }
-            stringRequest = new StringRequest(Request.Method.POST, tempUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    //Log.d("response", response);
-                    String output = "";
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        JSONArray jsonArray = jsonResponse.getJSONArray("weather");
-                        JSONObject jsonObjectWeather = jsonArray.getJSONObject(0);
-                        String description = jsonObjectWeather.getString("description");
-                        JSONObject jsonObjectMain = jsonResponse.getJSONObject("main");
-                        double temp = jsonObjectMain.getDouble("temp") - 273.15;
-                        double feelsLike = jsonObjectMain.getDouble("feels_like") - 273.15;
-                        float pressure = jsonObjectMain.getInt("pressure");
-                        int humidity = jsonObjectMain.getInt("humidity");
-                        JSONObject jsonObjectWind = jsonResponse.getJSONObject("wind");
-                        String wind = jsonObjectWind.getString("speed");
-                        JSONObject jsonObjectClouds = jsonResponse.getJSONObject("clouds");
-                        String clouds = jsonObjectClouds.getString("all");
-                        JSONObject jsonObjectSys = jsonResponse.getJSONObject("sys");
-                        String locationName = jsonResponse.getString("name");
-                        //output += "Current weather of " + locationName
-                        //       + "\n Temp: " + df.format(temp) + "C";
+            Log.d("MainActivity", "location: " + location);
+            tempUrl = url + "?q=" + location + "," + "&appid=" + appid;
+        }
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, tempUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //String output = "";
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    JSONArray jsonArray = jsonResponse.getJSONArray("weather");
+                    JSONObject jsonObjectWeather = jsonArray.getJSONObject(0);
+                    String description = jsonObjectWeather.getString("description");
+                    JSONObject jsonObjectMain = jsonResponse.getJSONObject("main");
+                    double temp = jsonObjectMain.getDouble("temp") - 273.15;
+                    double feelsLike = jsonObjectMain.getDouble("feels_like") - 273.15;
+                    float pressure = jsonObjectMain.getInt("pressure");
+                    int humidity = jsonObjectMain.getInt("humidity");
+                    JSONObject jsonObjectWind = jsonResponse.getJSONObject("wind");
+                    String wind = jsonObjectWind.getString("speed");
+                    JSONObject jsonObjectClouds = jsonResponse.getJSONObject("clouds");
+                    String clouds = jsonObjectClouds.getString("all");
+                    JSONObject jsonObjectSys = jsonResponse.getJSONObject("sys");
+                    String locationName = jsonResponse.getString("name");
 
-                        Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
-                        intent.putExtra("json_response", jsonResponse.toString());
-                        startActivity(intent);
+                    Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
+                    intent.putExtra("json_response", jsonResponse.toString());
+                    startActivity(intent);
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    Button getWeatherButton = findViewById(R.id.getWeatherButton);
-                    getWeatherButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            startActivity(myIntent);
-                        }
-                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
+            }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
@@ -162,11 +191,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 }
             }
             );
-        }
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(stringRequest);
     }
-
 
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Toast.makeText(this, "The switch is " + (isChecked ? "on" : "off"), Toast.LENGTH_SHORT).show();
