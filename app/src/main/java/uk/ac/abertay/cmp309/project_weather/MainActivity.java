@@ -53,7 +53,7 @@ import java.text.DecimalFormat;
 // http://api.openweathermap.org/data/2.5/weather?q=London,UK&APPID=4e2322456db9e681dcd39712eb48af6b
 // http://api.openweathermap.org/?=London,&api=4e2322456db9e681dcd39712eb48af6b
 
-public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
     EditText editTextLocationName;
     private Switch currentLocationSwitch;
     private com.google.android.gms.location.LocationRequest locationRequest;
@@ -103,14 +103,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         String location = editTextLocationName.getText().toString().trim();
         StringRequest stringRequest = null;
         // https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={API key}
-        if (location.isEmpty()) {
+        if (location.equals("")) {
             Toast.makeText(this, "Please fill in the Location field, or check the current location switch.", Toast.LENGTH_SHORT).show();
         } else {
             if (!location.isEmpty()) {
                 tempUrl = url + "?q=" + location + "," + "&appid=" + appid;
             }
             else {
-                if (location.isEmpty() && (currentLocationSwitch.isChecked())) {
+                if (currentLocationSwitch.isChecked()) {
                     tempUrl = url + "?lat=" + latitude + "&lon=" + longitude + "&appid=" + appid;
                 }
             }
@@ -275,4 +275,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     }
 
 
+    @Override
+    public void onClick(View v) {
+
+    }
 }
