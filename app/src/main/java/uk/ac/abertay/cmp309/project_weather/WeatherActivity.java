@@ -4,20 +4,28 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+
 public class WeatherActivity extends AppCompatActivity {
     TextView textViewPractice;
+    EditText editTextLocationPlaceholder, temperatureText;
+    // new
+    DecimalFormat df = new DecimalFormat("#.#");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
-
+        editTextLocationPlaceholder = findViewById(R.id.editTextLocationPlaceholder);
+        temperatureText = findViewById(R.id.temperatureText);
         textViewPractice = findViewById(R.id.textViewPractice);
 
         String jsonResponseString = getIntent().getStringExtra("json_response");
@@ -31,6 +39,8 @@ public class WeatherActivity extends AppCompatActivity {
             // Get the temperature
             JSONObject main = jsonResponse.getJSONObject("main");
             double temp = main.getDouble("temp") - 273.15;
+            // new
+            String formatted = df.format(temp);
 
             // Get the weather description
             JSONArray weather = jsonResponse.getJSONArray("weather");
@@ -39,7 +49,7 @@ public class WeatherActivity extends AppCompatActivity {
 
             // Use the retrieved data
             textViewPractice.setText("description: " + description + "\n" + "name: " + locationName + "\n" + "temp: " + temp);
-
+            temperatureText.setText("temp: " + temp);
 
         } catch (JSONException e) {
             e.printStackTrace();
