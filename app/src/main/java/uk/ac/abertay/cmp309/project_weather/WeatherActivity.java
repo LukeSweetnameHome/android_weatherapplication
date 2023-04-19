@@ -17,7 +17,7 @@ public class WeatherActivity extends AppCompatActivity {
     TextView textViewPractice;
     EditText editTextLocationPlaceholder, temperatureText;
     // new
-    DecimalFormat df = new DecimalFormat("#.#");
+    DecimalFormat df = new DecimalFormat("#");
 
 
     @Override
@@ -49,7 +49,10 @@ public class WeatherActivity extends AppCompatActivity {
 
             // Use the retrieved data
             textViewPractice.setText("description: " + description + "\n" + "name: " + locationName + "\n" + "temp: " + temp);
-            temperatureText.setText("temp: " + temp);
+            String formattedTemp = df.format(temp); // format temperature with one decimal place
+            temperatureText.setText(formattedTemp); // set formatted temperature to TextView
+
+            editTextLocationPlaceholder.setText("" + locationName);
 
         } catch (JSONException e) {
             e.printStackTrace();
