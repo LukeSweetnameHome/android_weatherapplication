@@ -7,6 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="537dp"
+        android:layout_height="827dp"
+        app:srcCompat="@drawable/lightning_2"
+        tools:layout_editor_absoluteX="-16dp"
+        tools:layout_editor_absoluteY="-112dp" />
+
     <EditText
         android:id="@+id/editTextLocationName"
         android:layout_width="wrap_content"
