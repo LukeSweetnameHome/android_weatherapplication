@@ -17,7 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Project_weather"
         tools:targetApi="31">
-
+        <activity
+            android:name=".widgetActivity"
+            android:exported="false"
+            android:label="@string/title_activity_widget"
+            android:theme="@style/Theme.Project_weather" />
         <activity
             android:name=".LocationsActivity"
             android:exported="false" />
