@@ -168,9 +168,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     double feelsLike = jsonObjectMain.getDouble("feels_like") - 273.15;
                     float pressure = jsonObjectMain.getInt("pressure");
                     int humidity = jsonObjectMain.getInt("humidity");
-                    int conditionCode = response.getJSONArray("weather").getJSONObject(0).getInt("id");
-                    int conditionCode = jsonObjectWeather.getInt()
-                    String iconCode = response.getJSONArray("weather").getJSONObject(0).getString("icon");
+                    //int conditionCode = response.getJSONArray("weather").getJSONObject(0).getInt("id");
+                    int conditionCode = jsonObjectWeather.getInt("id");
+                    String iconCode = jsonObjectWeather.getString("icon");
+                    //String iconCode = response.getJSONArray("weather").getJSONObject(0).getString("icon");
                     JSONObject jsonObjectWind = jsonResponse.getJSONObject("wind");
                     String wind = jsonObjectWind.getString("speed");
                     JSONObject jsonObjectClouds = jsonResponse.getJSONObject("clouds");
@@ -197,17 +198,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             );
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(stringRequest);
-    }
-    private void updateWeather(int conditionCode, String iconCode) {
-        // Get the weather condition text and icon drawable
-        String conditionText = getConditionText(conditionCode);
-        Drawable iconDrawable = getIconDrawable(iconCode);
-
-        // Update the UI with the weather condition text and icon
-        TextView conditionTextView = findViewById(R.id.condition_text_view);
-        conditionTextView.setText(conditionText);
-        ImageView iconImageView = findViewById(R.id.icon_image_view);
-        iconImageView.setImageDrawable(iconDrawable);
     }
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Toast.makeText(this, "The switch is " + (isChecked ? "on" : "off"), Toast.LENGTH_SHORT).show();
