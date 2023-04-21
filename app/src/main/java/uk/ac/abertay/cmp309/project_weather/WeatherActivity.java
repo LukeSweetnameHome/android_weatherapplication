@@ -3,9 +3,13 @@ package uk.ac.abertay.cmp309.project_weather;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,8 +20,8 @@ import java.text.DecimalFormat;
 public class WeatherActivity extends AppCompatActivity {
     TextView textViewPractice;
     EditText editTextLocationPlaceholder, temperatureText;
-    // new
     DecimalFormat df = new DecimalFormat("#");
+
     private void updateWeather(int conditionCode, String iconCode) {
         // Get the weather condition text and icon drawable
         String conditionText = getConditionText(conditionCode);
@@ -106,14 +110,24 @@ public class WeatherActivity extends AppCompatActivity {
         return conditionText;
     }
 
-
-        @Override
+    private ImageView weatherIcon;
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         editTextLocationPlaceholder = findViewById(R.id.editTextLocationPlaceholder);
         temperatureText = findViewById(R.id.temperatureText);
         textViewPractice = findViewById(R.id.textViewPractice);
+
+        // Get the weather condition code from the intent
+        String weatherCode = getIntent().getStringExtra("WEATHER_CODE");
+
+        // Find the ImageView in the layout
+        weatherIcon = findViewById(R.id.weather_icon);
+
+        // Set the weather icon based on the weather condition code
+        setWeatherIcon(weatherIcon, weatherCode);
+
 
         String jsonResponseString = getIntent().getStringExtra("json_response");
 
@@ -134,8 +148,12 @@ public class WeatherActivity extends AppCompatActivity {
             JSONObject weatherObject = weather.getJSONObject(0);
             String description = weatherObject.getString("description");
 
+            int conditionCode = getIntent().getIntExtra("condition_code", -1);
+            String iconCode = getIntent().getStringExtra("icon_code");
+            updateWeather(conditionCode, iconCode);
+
             // Use the retrieved data
-            textViewPractice.setText("description: " + description + "\n" + "name: " + locationName + "\n" + "temp: " + temp);
+            textViewPractice.setText("description: " + description + "\n" + "name: " + locationName + "\n" + "temp: " + temp + "\n" + "iconcode: " + iconCode);
             String formattedTemp = df.format(temp); // format temperature with one decimal place
             temperatureText.setText(formattedTemp); // set formatted temperature to TextView
 
@@ -144,7 +162,28 @@ public class WeatherActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        private void setWeatherIcon(ImageView imageView, String weatherCode) {
+            int resourceId = 0;
+            switch (weatherCode) {
+                case "01d":
+                    resourceId = R.drawable.clear_sky_day;
+                    break;
+                case "01n":
+                    resourceId = R.drawable.clear_sky_night;
+                    break;
+                case "02d":
+                    resourceId = R.drawable.few_clouds_day;
+                    break;
+                case "02n":
+                    resourceId = R.drawable.few_clouds_night;
+                    break;
+                // Add more cases for other weather conditions
+                default:
+                    resourceId = R.drawable.unknown;
+                    break;
+            }
+            imageView.setImageResource(resourceId);
+        }
+        }
 
     }
-}

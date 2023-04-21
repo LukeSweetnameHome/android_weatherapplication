@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     String clouds = jsonObjectClouds.getString("all");
                     JSONObject jsonObjectSys = jsonResponse.getJSONObject("sys");
                     String locationName = jsonResponse.getString("name");
-                    updateWeather(conditionCode, iconCode);
 
                     Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
                     intent.putExtra("json_response", jsonResponse.toString());
