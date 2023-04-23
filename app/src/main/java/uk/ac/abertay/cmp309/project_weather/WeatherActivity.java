@@ -2,7 +2,7 @@ package uk.ac.abertay.cmp309.project_weather;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -15,6 +15,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.DecimalFormat;
 
 public class WeatherActivity extends AppCompatActivity {
@@ -22,25 +28,47 @@ public class WeatherActivity extends AppCompatActivity {
 
     EditText editTextLocationPlaceholder, temperatureText;
     DecimalFormat df = new DecimalFormat("#");
-    private void getIconDrawable(String iconCode, ImageView imageView) {
+
+    private Drawable getIconDrawable(Context context, String iconCode) {
         String iconUrl = "https://openweathermap.org/img/w/" + iconCode + ".png";
-        Glide.with(this).load(iconUrl).into(imageView);
+        String filename = "icon_" + iconCode + ".png";
+        File file = new File(context.getCacheDir(), filename);
+
+        if (file.exists()) {
+            // Load the icon from cache if it exists
+            return Drawable.createFromPath(file.getAbsolutePath());
+        } else {
+            // Download and cache the icon if it doesn't exist in cache
+            try {
+                InputStream inputStream = (InputStream) new URL(iconUrl).getContent();
+                FileOutputStream outputStream = new FileOutputStream(file);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, length);
+                }
+                outputStream.flush();
+                outputStream.close();
+                inputStream.close();
+                return Drawable.createFromStream(new FileInputStream(file), "src name");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
+
     private void updateWeather(int conditionCode, String iconCode) {
         // Get the weather condition text and icon drawable
         String conditionText = getConditionText(conditionCode);
         Drawable iconDrawable = getIconDrawable(iconCode);
-
-        // Update the UI with the weather condition text and icon
-        TextView conditionTextView = findViewById(R.id.condition_text_view);
-        conditionTextView.setText(conditionText);
 
         ImageView iconImageView = findViewById(R.id.icon_Image_View);
         iconImageView.setImageDrawable(iconDrawable);
 
     }
 
-    private String getConditionText(int conditionCode, String iconCode) {
+    private String getConditionText(int conditionCode) {
         String conditionText = "";
         switch (conditionCode) {
             case 200:
