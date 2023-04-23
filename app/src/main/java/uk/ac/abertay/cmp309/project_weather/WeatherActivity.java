@@ -21,7 +21,10 @@ public class WeatherActivity extends AppCompatActivity {
     TextView textViewPractice;
     EditText editTextLocationPlaceholder, temperatureText;
     DecimalFormat df = new DecimalFormat("#");
-
+    private void getIconDrawable(String iconCode, ImageView imageView) {
+        String iconUrl = "https://openweathermap.org/img/w/" + iconCode + ".png";
+        Glide.with(this).load(iconUrl).into(imageView);
+    }
     private void updateWeather(int conditionCode, String iconCode) {
         // Get the weather condition text and icon drawable
         String conditionText = getConditionText(conditionCode);
@@ -32,9 +35,17 @@ public class WeatherActivity extends AppCompatActivity {
         conditionTextView.setText(conditionText);
         ImageView iconImageView = findViewById(R.id.icon_Image_View);
         iconImageView.setImageDrawable(iconDrawable);
+
+        // Update the UI with the weather condition text
+        TextView conditionTextView = findViewById(R.id.condition_text_view);
+        conditionTextView.setText(conditionText);
+
+        // Get the weather icon drawable
+        ImageView iconImageView = findViewById(R.id.icon_Image_View);
+        getIconDrawable(iconCode, iconImageView);
     }
 
-    private String getConditionText(int conditionCode) {
+    private String getConditionText(int conditionCode, String iconCode) {
         String conditionText = "";
         switch (conditionCode) {
             case 200:
