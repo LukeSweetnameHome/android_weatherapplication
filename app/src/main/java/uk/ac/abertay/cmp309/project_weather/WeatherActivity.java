@@ -18,7 +18,8 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 
 public class WeatherActivity extends AppCompatActivity {
-    TextView textViewPractice;
+    private int conditionCode = 500;
+
     EditText editTextLocationPlaceholder, temperatureText;
     DecimalFormat df = new DecimalFormat("#");
     private void getIconDrawable(String iconCode, ImageView imageView) {
@@ -33,16 +34,10 @@ public class WeatherActivity extends AppCompatActivity {
         // Update the UI with the weather condition text and icon
         TextView conditionTextView = findViewById(R.id.condition_text_view);
         conditionTextView.setText(conditionText);
+
         ImageView iconImageView = findViewById(R.id.icon_Image_View);
         iconImageView.setImageDrawable(iconDrawable);
 
-        // Update the UI with the weather condition text
-        TextView conditionTextView = findViewById(R.id.condition_text_view);
-        conditionTextView.setText(conditionText);
-
-        // Get the weather icon drawable
-        ImageView iconImageView = findViewById(R.id.icon_Image_View);
-        getIconDrawable(iconCode, iconImageView);
     }
 
     private String getConditionText(int conditionCode, String iconCode) {
@@ -126,9 +121,6 @@ public class WeatherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
-        editTextLocationPlaceholder = findViewById(R.id.editTextLocationPlaceholder);
-        temperatureText = findViewById(R.id.temperatureText);
-        textViewPractice = findViewById(R.id.textViewPractice);
 
         // Get the weather condition code from the intent
         String weatherCode = getIntent().getStringExtra("WEATHER_CODE");
@@ -163,11 +155,10 @@ public class WeatherActivity extends AppCompatActivity {
             updateWeather(conditionCode, iconCode);
 
             // Use the retrieved data
-            textViewPractice.setText("description: " + description + "\n" + "name: " + locationName + "\n" + "temp: " + temp + "\n" + "iconcode: " + iconCode);
+
             String formattedTemp = df.format(temp); // format temperature with one decimal place
             temperatureText.setText(formattedTemp); // set formatted temperature to TextView
 
-            editTextLocationPlaceholder.setText("" + locationName);
 
         } catch (JSONException e) {
             e.printStackTrace();
