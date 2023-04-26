@@ -1,13 +1,10 @@
 package uk.ac.abertay.cmp309.project_weather;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 
@@ -15,21 +12,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.text.DecimalFormat;
 
 public class WeatherActivity extends AppCompatActivity {
     private int conditionCode = 500;
 
-    EditText editTextLocationPlaceholder, temperatureText;
+    TextView temperatureTextView, locationTextView, mainTextView, feels_likeTextView;
+
     DecimalFormat df = new DecimalFormat("#");
 
-    private Drawable getIconDrawable(Context context, String iconCode) {
+    /*private Drawable getIconDrawable(Context context, String iconCode) {
         String iconUrl = "https://openweathermap.org/img/w/" + iconCode + ".png";
         String filename = "icon_" + iconCode + ".png";
         File file = new File(context.getCacheDir(), filename);
@@ -56,16 +48,12 @@ public class WeatherActivity extends AppCompatActivity {
             }
         }
         return null;
-    }
+    }*/
 
     private void updateWeather(int conditionCode, String iconCode) {
         // Get the weather condition text and icon drawable
         String conditionText = getConditionText(conditionCode);
-        Drawable iconDrawable = getIconDrawable(iconCode);
-
-        ImageView iconImageView = findViewById(R.id.icon_Image_View);
-        iconImageView.setImageDrawable(iconDrawable);
-
+//        Drawable iconDrawable = getIconDrawable(iconCode);
     }
 
     private String getConditionText(int conditionCode) {
@@ -145,19 +133,20 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private ImageView weatherIcon;
+    ImageView icon_Image_View;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        // Get the weather condition code from the intent
-        String weatherCode = getIntent().getStringExtra("WEATHER_CODE");
 
-        // Find the ImageView in the layout
-        weatherIcon = findViewById(R.id.weather_icon);
+        icon_Image_View = findViewById(R.id.icon_Image_View);
+        temperatureTextView = findViewById(R.id.temperatureTextView);
+        locationTextView = findViewById(R.id.locationTextView);
+        mainTextView = findViewById(R.id.mainTextView);
+        feels_likeTextView = findViewById(R.id.feels_likeTextView);
 
-        // Set the weather icon based on the weather condition code
-        setWeatherIcon(weatherIcon, weatherCode);
 
         String jsonResponseString = getIntent().getStringExtra("json_response");
 
@@ -178,224 +167,236 @@ public class WeatherActivity extends AppCompatActivity {
             JSONObject weatherObject = weather.getJSONObject(0);
             String description = weatherObject.getString("description");
 
-            int conditionCode = getIntent().getIntExtra("condition_code", -1);
-            String iconCode = getIntent().getStringExtra("icon_code");
-            updateWeather(conditionCode, iconCode);
+            int conditionCode = weatherObject.getInt("condition_code");
+            String iconCode = weatherObject.getString("icon_code");
+
+            // Get feels_like
+            double feelsLike = main.getDouble("feels_like") - 273.15;
+            String feelslikev2 = df.format(feelsLike);
+
+            Glide.with(getApplicationContext())
+                    .load("https://openweathermap.org/img/w/" + iconCode + ".png")
+                    .into(icon_Image_View);
+
+//            updateWeather(conditionCode, iconCode);
 
             // Use the retrieved data
 
             String formattedTemp = df.format(temp); // format temperature with one decimal place
-            temperatureText.setText(formattedTemp); // set formatted temperature to TextView
-
-
+            temperatureTextView.setText(formattedTemp);
+            locationTextView.setText(conditionCode);
+            mainTextView.setText(iconCode); // need to format to upper case!!!
+            String formattedFeelsLike = df.format(feelsLike);
+            feels_likeTextView.setText(formattedFeelsLike);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         }
 
-    private void setWeatherIcon(ImageView imageView, String weatherCode) {
-        int resourceId = 0;
-        switch (weatherCode) {
-
-        // Clear
-        case "01d":
-        resourceId = R.drawable.clear_sky_day;
-        break;
-        case "01n":
-        resourceId = R.drawable.clear_sky_night;
-        break;
-
-        // Clouds
-        case "02d":
-        resourceId = R.drawable.few_clouds_day;
-        break;
-        case "02n":
-        resourceId = R.drawable.few_clouds_night;
-        break;
-        case "03d":
-        resourceId = R.drawable.scattered_clouds_day;
-        break;
-        case "03n":
-        resourceId = R.drawable.scattered_clouds_night;
-        break;
-        case "04d":
-        resourceId = R.drawable.broken_clouds_day;
-        break;
-        case "04n":
-        resourceId = R.drawable.broken_clouds_night;
-        break;
-        case "04d":
-        resourceId = R.drawable.overcast_clouds_day;
-        break;
-        case "04n":
-        resourceId = R.drawable.overcast_clouds_night;
-        break;
-
-        // Atmosphere
-        case "50d":
-        resourceId = R.drawable.mist;
-        break;
-        case "50d":
-        resourceId = R.drawable.smoke;
-        break;
-        case "50d":
-        resourceId = R.drawable.haze;
-        break;
-        case "50d":
-        resourceId = R.drawable.sand/dust_whirls;
-        break;
-        case "50d":
-        resourceId = R.drawable.fog;
-        break;
-        case "50d":
-        resourceId = R.drawable.sand;
-        break;
-        case "50d":
-        resourceId = R.drawable.dust;
-        break;
-        case "50d":
-        resourceId = R.drawable.volcanic_ash;
-        break;
-        case "50d":
-        resourceId = R.drawable.squalls;
-        break;
-        case "50d":
-        resourceId = R.drawable.tornado;
-        break;
-
-        // Snow
-        case "13d":
-        resourceId = R.drawable.light_snow;
-        break;
-        case "13d":
-        resourceId = R.drawable.snow;
-        break;
-        case "13d":
-        resourceId = R.drawable.heavy_snow;
-        break;
-        case "13d":
-        resourceId = R.drawable.sleet;
-        break;
-        case "13d":
-        resourceId = R.drawable.light_shower_sleet;
-        break;
-        case "13d":
-        resourceId = R.drawable.shower_sleet;
-        break;
-        case "13d":
-        resourceId = R.drawable.light_rain_and_snow;
-        break;
-        case "13d":
-        resourceId = R.drawable.rain_and_snow;
-        break;
-        case "13d":
-        resourceId = R.drawable.light_shower_snow;
-        break;
-        case "13d":
-        resourceId = R.drawable.shower_snow;
-        break;
-        case "13d":
-        resourceId = R.drawable.heavy_shower_snow;
-        break;
-
-        // Rain
-        case "10d":
-        resourceId = R.drawable.light_rain;
-        break;
-        case "10d":
-        resourceId = R.drawable.moderate_rain;
-        break;
-        case "10d":
-        resourceId = R.drawable.heavy_intensity_rain;
-        break;
-        case "10d":
-        resourceId = R.drawable.very_heavy_rain;
-        break;
-        case "10d":
-        resourceId = R.drawable.extreme_rain;
-        break;
-        case "13d":
-        resourceId = R.drawable.freezing_rain;
-        break;
-        case "09d":
-        resourceId = R.drawable.light_intensity_shower_rain;
-        break;
-        case "09d":
-        resourceId = R.drawable.shower_rain;
-        break;
-        case "09d":
-        resourceId = R.drawable.heavy_intensity_shower_rain;
-        break;
-        case "09d":
-        resourceId = R.drawable.ragged_shower_rain;
-        break;
-
-        // Drizzle
-        case "09d":
-        resourceId = R.drawable.light_intensity_drizzle;
-        break;
-        case "09d":
-        resourceId = R.drawable.drizzle;
-        break;
-        case "09d":
-        resourceId = R.drawable.heavy_intensity_drizzle;
-        break;
-        case "09d":
-        resourceId = R.drawable.light_intensity_drizzle_rain;
-        break;
-        case "09d":
-        resourceId = R.drawable.drizzle_rain;
-        break;
-        case "09d":
-        resourceId = R.drawable.heavy_intensity_drizzle_rain;
-        break;
-        case "09d":
-        resourceId = R.drawable.shower_rain_and_drizzle;
-        break;
-        case "09d":
-        resourceId = R.drawable.heavy_shower_rain_and_drizzle;
-        break;
-        case "09d":
-        resourceId = R.drawable.shower_drizzle;
-        break;
-
-        // Thunderstorm
-        case "11d":
-        resourceId = R.drawable.thunderstorm_with_light_rain;
-        break;
-        case "11d":
-        resourceId = R.drawable.thunderstorm_with_rain;
-        break;
-        case "11d":
-        resourceId = R.drawable.thunderstorm_with_heavy_rain;
-        break;
-        case "11d":
-        resourceId = R.drawable.light_thunderstorm;
-        break;
-        case "11d":
-        resourceId = R.drawable.thunderstorm;
-        break;
-        case "11d":
-        resourceId = R.drawable.heavy_thunderstorm;
-        break;
-        case "11d":
-        resourceId = R.drawable.ragged_thunderstorm;
-        break;
-        case "11d":
-        resourceId = R.drawable.thunderstorm_with_light_drizzle;
-        break;
-        case "11d":
-        resourceId = R.drawable.thunderstorm_with_drizzle;
-        break;
-        case "11d":
-        resourceId = R.drawable.thunderstorm_with_heavy_drizzle;
-        break;
-    // Add more cases for other weather conditions
-    default:
-        resourceId = R.drawable.unknown;
-        break;
-        }
-        imageView.setImageResource(resourceId);
-    }
+//    private void getIconDrawable(String iconCode) {
+//        int resourceId = 0;
+//        switch (iconCode) {
+//
+//        // Clear
+//        case "01d":
+//        resourceId = R.drawable.clear_sky_day;
+//        break;
+//        case "01n":
+//        resourceId = R.drawable.clear_sky_night;
+//        break;
+//
+//        // Clouds
+//        case "02d":
+//        resourceId = R.drawable.few_clouds_day;
+//        break;
+//        case "02n":
+//        resourceId = R.drawable.few_clouds_night;
+//        break;
+//        case "03d":
+//        resourceId = R.drawable.scattered_clouds_day;
+//        break;
+//        case "03n":
+//        resourceId = R.drawable.scattered_clouds_night;
+//        break;
+//        case "04d":
+//        resourceId = R.drawable.broken_clouds_day;
+//        break;
+//        case "04n":
+//        resourceId = R.drawable.broken_clouds_night;
+//        break;
+//        case "04d":
+//        resourceId = R.drawable.overcast_clouds_day;
+//        break;
+//        case "04n":
+//        resourceId = R.drawable.overcast_clouds_night;
+//        break;
+//
+//        // Atmosphere
+//        case "50d":
+//        resourceId = R.drawable.mist;
+//        break;
+//        case "50d":
+//        resourceId = R.drawable.smoke;
+//        break;
+//        case "50d":
+//        resourceId = R.drawable.haze;
+//        break;
+//        case "50d":
+//        resourceId = R.drawable.sand/dust_whirls;
+//        break;
+//        case "50d":
+//        resourceId = R.drawable.fog;
+//        break;
+//        case "50d":
+//        resourceId = R.drawable.sand;
+//        break;
+//        case "50d":
+//        resourceId = R.drawable.dust;
+//        break;
+//        case "50d":
+//        resourceId = R.drawable.volcanic_ash;
+//        break;
+//        case "50d":
+//        resourceId = R.drawable.squalls;
+//        break;
+//        case "50d":
+//        resourceId = R.drawable.tornado;
+//        break;
+//
+//        // Snow
+//        case "13d":
+//        resourceId = R.drawable.light_snow;
+//        break;
+//        case "13d":
+//        resourceId = R.drawable.snow;
+//        break;
+//        case "13d":
+//        resourceId = R.drawable.heavy_snow;
+//        break;
+//        case "13d":
+//        resourceId = R.drawable.sleet;
+//        break;
+//        case "13d":
+//        resourceId = R.drawable.light_shower_sleet;
+//        break;
+//        case "13d":
+//        resourceId = R.drawable.shower_sleet;
+//        break;
+//        case "13d":
+//        resourceId = R.drawable.light_rain_and_snow;
+//        break;
+//        case "13d":
+//        resourceId = R.drawable.rain_and_snow;
+//        break;
+//        case "13d":
+//        resourceId = R.drawable.light_shower_snow;
+//        break;
+//        case "13d":
+//        resourceId = R.drawable.shower_snow;
+//        break;
+//        case "13d":
+//        resourceId = R.drawable.heavy_shower_snow;
+//        break;
+//
+//        // Rain
+//        case "10d":
+//        resourceId = R.drawable.light_rain;
+//        break;
+//        case "10d":
+//        resourceId = R.drawable.moderate_rain;
+//        break;
+//        case "10d":
+//        resourceId = R.drawable.heavy_intensity_rain;
+//        break;
+//        case "10d":
+//        resourceId = R.drawable.very_heavy_rain;
+//        break;
+//        case "10d":
+//        resourceId = R.drawable.extreme_rain;
+//        break;
+//        case "13d":
+//        resourceId = R.drawable.freezing_rain;
+//        break;
+//        case "09d":
+//        resourceId = R.drawable.light_intensity_shower_rain;
+//        break;
+//        case "09d":
+//        resourceId = R.drawable.shower_rain;
+//        break;
+//        case "09d":
+//        resourceId = R.drawable.heavy_intensity_shower_rain;
+//        break;
+//        case "09d":
+//        resourceId = R.drawable.ragged_shower_rain;
+//        break;
+//
+//        // Drizzle
+//        case "09d":
+//        resourceId = R.drawable.light_intensity_drizzle;
+//        break;
+//        case "09d":
+//        resourceId = R.drawable.drizzle;
+//        break;
+//        case "09d":
+//        resourceId = R.drawable.heavy_intensity_drizzle;
+//        break;
+//        case "09d":
+//        resourceId = R.drawable.light_intensity_drizzle_rain;
+//        break;
+//        case "09d":
+//        resourceId = R.drawable.drizzle_rain;
+//        break;
+//        case "09d":
+//        resourceId = R.drawable.heavy_intensity_drizzle_rain;
+//        break;
+//        case "09d":
+//        resourceId = R.drawable.shower_rain_and_drizzle;
+//        break;
+//        case "09d":
+//        resourceId = R.drawable.heavy_shower_rain_and_drizzle;
+//        break;
+//        case "09d":
+//        resourceId = R.drawable.shower_drizzle;
+//        break;
+//
+//        // Thunderstorm
+//        case "11d":
+//        resourceId = R.drawable.thunderstorm_with_light_rain;
+//        break;
+//        case "11d":
+//        resourceId = R.drawable.thunderstorm_with_rain;
+//        break;
+//        case "11d":
+//        resourceId = R.drawable.thunderstorm_with_heavy_rain;
+//        break;
+//        case "11d":
+//        resourceId = R.drawable.light_thunderstorm;
+//        break;
+//        case "11d":
+//        resourceId = R.drawable.thunderstorm;
+//        break;
+//        case "11d":
+//        resourceId = R.drawable.heavy_thunderstorm;
+//        break;
+//        case "11d":
+//        resourceId = R.drawable.ragged_thunderstorm;
+//        break;
+//        case "11d":
+//        resourceId = R.drawable.thunderstorm_with_light_drizzle;
+//        break;
+//        case "11d":
+//        resourceId = R.drawable.thunderstorm_with_drizzle;
+//        break;
+//        case "11d":
+//        resourceId = R.drawable.thunderstorm_with_heavy_drizzle;
+//        break;
+//    // Add more cases for other weather conditions
+//    default:
+//        resourceId = R.drawable.unknown;
+//        break;
+//        }
+//        ImageView imageView = findViewById(R.id.icon_Image_View);
+//        imageView.setImageResource(resourceId);
+//    }
 }
