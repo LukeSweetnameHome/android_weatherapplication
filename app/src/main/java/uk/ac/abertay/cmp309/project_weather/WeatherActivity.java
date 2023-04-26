@@ -167,8 +167,11 @@ public class WeatherActivity extends AppCompatActivity {
             JSONObject weatherObject = weather.getJSONObject(0);
             String description = weatherObject.getString("description");
 
-            int conditionCode = weatherObject.getInt("condition_code");
-            String iconCode = weatherObject.getString("icon_code");
+            int conditionCode = getIntent().getIntExtra("condition_code", -1);
+            String iconCode = getIntent().getStringExtra("icon_code");
+            updateWeather(conditionCode, iconCode);
+            //int conditionCode = weatherObject.getInt("condition_code");
+            //String iconCode = weatherObject.getString("icon_code");
 
             // Get feels_like
             double feelsLike = main.getDouble("feels_like") - 273.15;
@@ -184,8 +187,8 @@ public class WeatherActivity extends AppCompatActivity {
 
             String formattedTemp = df.format(temp); // format temperature with one decimal place
             temperatureTextView.setText(formattedTemp);
-            locationTextView.setText(conditionCode);
-            mainTextView.setText(iconCode); // need to format to upper case!!!
+            locationTextView.setText(locationName);
+            mainTextView.setText(description); // need to format to upper case!!!
             String formattedFeelsLike = df.format(feelsLike);
             feels_likeTextView.setText(formattedFeelsLike);
         } catch (JSONException e) {
