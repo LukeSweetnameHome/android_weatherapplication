@@ -21,30 +21,27 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/black"
         android:padding="16sp"
         tools:context=".widget"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp"
-        android:background="@color/black">
+        tools:layout_editor_absoluteY="0dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-
-
-            >
+            android:layout_height="150dp">
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
-                    android:paddingLeft="10dp"
                     android:layout_height="match_parent">
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/icon_Image_View"
                         android:layout_width="110dp"
                         android:layout_height="match_parent"
                         android:src="@drawable/sunny_icon" />
@@ -53,37 +50,71 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
-                    android:paddingLeft="10dp"
                     android:layout_height="match_parent">
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:gravity="center|left"
+                        android:id="@+id/temperatureTextView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:gravity="center|left"
                         android:text="40"
-                        android:textSize="70dp"
                         android:textColor="#000"
-                        android:textStyle="bold"/>
+                        android:textSize="40dp"
+                        android:textStyle="bold" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:paddingLeft="10dp">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        android:gravity="top|left"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:gravity="center|left"
+                        android:orientation="vertical">
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/locationTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Clouds"
+                            android:text="Location"
                             android:textColor="#000"
                             android:textSize="20sp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/mainTextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center|left"
+                                android:text="Clouds"
+                                android:textColor="#000"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/feels_likeTextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center|left"
+                                android:text="feels_like"
+                                android:textColor="#000"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -92,4 +123,6 @@
 
 
         </androidx.cardview.widget.CardView>
+
     </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>
