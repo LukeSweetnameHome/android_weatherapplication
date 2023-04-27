@@ -19,7 +19,7 @@ public class WeatherActivity extends AppCompatActivity {
 
     TextView temperatureTextView, locationTextView, mainTextView, feels_likeTextView;
 
-    DecimalFormat df = new DecimalFormat("#");
+    DecimalFormat df = new DecimalFormat("#" + "°C");
 
     /*private Drawable getIconDrawable(Context context, String iconCode) {
         String iconUrl = "https://openweathermap.org/img/w/" + iconCode + ".png";

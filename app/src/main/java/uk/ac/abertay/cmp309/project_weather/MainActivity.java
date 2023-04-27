@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                         double latitude = locationResult.getLocations().get(index).getLatitude();
                                         double longitude = locationResult.getLocations().get(index).getLongitude();
 
-                                        addressText.setText("Latitude: " + latitude + "/n" + "Longitude: " + longitude);
+                                        addressText.setText("Latitude: " + latitude + "\n" + "Longitude: " + longitude);
                                     }
                                 }
                             }, Looper.getMainLooper());
