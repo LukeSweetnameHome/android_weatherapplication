@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -58,8 +59,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private TextView addressText;
     private static final String TAG = "MainActivity";
 
-    private double latitude;
-    private double longitude;
+    Button goToLocations;
+    private double latitude, longitude;
+    //private double longitude;
 
     private final String url = "http://api.openweathermap.org/data/2.5/weather";
     private final String appid = "4e2322456db9e681dcd39712eb48af6b";
@@ -249,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 
 
+
     private void turnOnGPS() {
 
 
@@ -300,10 +303,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         isEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         return isEnabled;
     }
-
-
     @Override
     public void onClick(View v) {
-
+        Button goToLocations = findViewById(R.id.goToLocations);
+        Intent intent = new Intent(MainActivity.this, LocationsActivity.class);
+        startActivity(intent);
     }
 }
