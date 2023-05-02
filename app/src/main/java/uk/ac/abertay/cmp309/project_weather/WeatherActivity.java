@@ -1,6 +1,9 @@
 package uk.ac.abertay.cmp309.project_weather;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +17,7 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 
-public class WeatherActivity extends AppCompatActivity {
+public class WeatherActivity extends AppCompatActivity implements View.OnClickListener {
     private int conditionCode = 500;
 
     TextView temperatureTextView, locationTextView, mainTextView, feels_likeTextView;
@@ -196,6 +199,12 @@ public class WeatherActivity extends AppCompatActivity {
         }
 
         }
+    @Override
+    public void onClick(View v) {
+        Button goHomeButton = findViewById(R.id.goHomeButton);
+        Intent intent = new Intent(WeatherActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 
 //    private void getIconDrawable(String iconCode) {
 //        int resourceId = 0;

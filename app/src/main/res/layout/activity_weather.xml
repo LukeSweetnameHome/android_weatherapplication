@@ -19,14 +19,16 @@
         app:layout_constraintVertical_bias="0.023" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="407dp"
-        android:layout_height="571dp"
-        android:layout_marginTop="92dp"
+        android:id="@+id/linearLayoutCompat"
+        android:layout_width="378dp"
+        android:layout_height="177dp"
         android:padding="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.155"
         tools:context=".widget">
 
         <androidx.cardview.widget.CardView
@@ -127,4 +129,18 @@
         </androidx.cardview.widget.CardView>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <Button
+        android:id="@+id/goBackHomeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="Home"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.91" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
