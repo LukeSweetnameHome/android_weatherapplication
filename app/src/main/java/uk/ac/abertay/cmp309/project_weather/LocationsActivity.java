@@ -1,13 +1,6 @@
 package uk.ac.abertay.cmp309.project_weather;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,22 +8,33 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.ktx.Firebase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LocationsActivity extends AppCompatActivity implements View.OnClickListener {
+import java.util.HashMap;
+import java.util.Map;
+
+public class LocationsActivity extends AppCompatActivity {
     Button goHomeButton, newLocationButton, viewWeatherButton;
     EditText editTextLocation;
+
+    FirebaseFirestore db;
+
     private final String url = "http://api.openweathermap.org/data/2.5/weather";
     private final String appid = "4e2322456db9e681dcd39712eb48af6b";
 
@@ -41,10 +45,36 @@ public class LocationsActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_locations);
 
-        goHomeButton = findViewById(R.id.goHomeButton);
-        newLocationButton = findViewById(R.id.newLocationButton);
+        //goHomeButton = findViewById(R.id.goHomeButton);
         viewWeatherButton = findViewById(R.id.viewWeatherButton);
+        editTextLocation= findViewById(R.id.editTextLocation);
+        db = FirebaseFirestore.getInstance();
+//        newLocationButton = findViewById(R.id.newLocationButton);
+//        newLocationButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String Location = editTextLocation.getText().toString();
+//                Map<String, Object> location = new HashMap<>();
+//                location.put("Location", Location);
+//
+//
+//                db.collection("locations")
+//                        .add(location)
+//                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                            @Override
+//                            public void onSuccess(DocumentReference documentReference) {
+//                                Toast.makeText(LocationsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }).addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Toast.makeText(LocationsActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
+//            }
+//        });
     }
+
     
     public void getWeatherDetails(View view) {
         String tempUrl;
@@ -104,16 +134,31 @@ public class LocationsActivity extends AppCompatActivity implements View.OnClick
 
     // Add button would probably be an intent carrying the new desired locations weather details to the weatheractivity
     // but also to write, read data from the firebase
-    @Override
-    public void onClick(View v) {
-        Button goHomeButton = findViewById(R.id.goHomeButton);
+
+    public void handleHomeButton(View v) {
+       // Button goHomeButton = findViewById(R.id.goHomeButton);
         Intent intent = new Intent(LocationsActivity.this, MainActivity.class);
         startActivity(intent);
     }
-    public void getNewLocation(View view){
+
+    public void handleDatabaseWrite(View v) {
+        String Location = editTextLocation.getText().toString();
+        Map<String, Object> location = new HashMap<>();
+        location.put("Location", Location);
 
 
-
-
+        db.collection("locations")
+                .add(location)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(LocationsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(LocationsActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

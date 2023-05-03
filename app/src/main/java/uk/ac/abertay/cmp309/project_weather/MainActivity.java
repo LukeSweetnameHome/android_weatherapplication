@@ -50,7 +50,7 @@ import java.text.DecimalFormat;
 // http://api.openweathermap.org/data/2.5/weather?q=London,UK&APPID=4e2322456db9e681dcd39712eb48af6b
 // http://api.openweathermap.org/?=London,&api=4e2322456db9e681dcd39712eb48af6b
 
-public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     EditText editTextLocationName;
     private Switch currentLocationSwitch;
     private com.google.android.gms.location.LocationRequest locationRequest;
@@ -87,8 +87,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(2000);*/
 
+        // Try to implement wifi checking
+        //<uses-permission android:name="android.permission.INTERNET" />
 
-        // start of new
         LocationCallback locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -103,17 +104,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         };
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            // Try to look through this
             return;
         }
         LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-        // end of new
 
         currentLocationSwitch = findViewById(R.id.currentLocationSwitch);
         if (currentLocationSwitch != null) {
@@ -298,14 +292,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         if (locationManager == null) {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        } else {
+            Toast.makeText(this, "GPS is not enabled", Toast.LENGTH_SHORT).show();
         }
 
         isEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         return isEnabled;
+
     }
-    @Override
-    public void onClick(View v) {
-        Button goToLocations = findViewById(R.id.goToLocations);
+
+    //@Override
+    public void handleLocationsButton(View v) {
+        //Button goToLocations = findViewById(R.id.goToLocations);
         Intent intent = new Intent(MainActivity.this, LocationsActivity.class);
         startActivity(intent);
     }
