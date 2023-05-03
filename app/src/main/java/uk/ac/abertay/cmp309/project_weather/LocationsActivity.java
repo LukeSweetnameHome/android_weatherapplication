@@ -45,7 +45,6 @@ public class LocationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_locations);
 
-        //goHomeButton = findViewById(R.id.goHomeButton);
         viewWeatherButton = findViewById(R.id.viewWeatherButton);
         editTextLocation= findViewById(R.id.editTextLocation);
         db = FirebaseFirestore.getInstance();
