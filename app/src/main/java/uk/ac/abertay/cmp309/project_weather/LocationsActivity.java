@@ -21,21 +21,29 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.ktx.Firebase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LocationsActivity extends AppCompatActivity implements View.OnClickListener {
-    Button goHomeButton;
+    Button goHomeButton, newLocationButton, viewWeatherButton;
     EditText editTextLocation;
     private final String url = "http://api.openweathermap.org/data/2.5/weather";
     private final String appid = "4e2322456db9e681dcd39712eb48af6b";
+
+
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_locations);
+
+        goHomeButton = findViewById(R.id.goHomeButton);
+        newLocationButton = findViewById(R.id.newLocationButton);
+        viewWeatherButton = findViewById(R.id.viewWeatherButton);
     }
     
     public void getWeatherDetails(View view) {
@@ -101,5 +109,11 @@ public class LocationsActivity extends AppCompatActivity implements View.OnClick
         Button goHomeButton = findViewById(R.id.goHomeButton);
         Intent intent = new Intent(LocationsActivity.this, MainActivity.class);
         startActivity(intent);
+    }
+    public void getNewLocation(View view){
+
+
+
+
     }
 }

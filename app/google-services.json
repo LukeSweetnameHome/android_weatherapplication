@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "443418082787",
+    "project_id": "weatherforecastingapp-1c32d",
+    "storage_bucket": "weatherforecastingapp-1c32d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443418082787:android:fd9d6f931a643d1c5334d6",
+        "android_client_info": {
+          "package_name": "uk.ac.abertay.cmp309.project_weather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "443418082787-hnm3qnkef9fboq1st2o0845aou2etoov.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgYoHSkRNxL1Xd3e4-4_norLh-yC1gwck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "443418082787-hnm3qnkef9fboq1st2o0845aou2etoov.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
