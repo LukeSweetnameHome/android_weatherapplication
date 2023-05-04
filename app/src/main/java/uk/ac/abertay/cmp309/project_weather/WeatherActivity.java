@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -186,7 +185,6 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
         }
     @Override
     public void onClick(View v) {
-        Button goHomeButton = findViewById(R.id.goHomeButton);
         Intent intent = new Intent(WeatherActivity.this, MainActivity.class);
         startActivity(intent);
     }
