@@ -16,7 +16,8 @@
         android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter your Email" />
+        android:hint="Enter your Email"
+        android:minHeight="48dp" />
 
     <!-- Edit text for password -->
     <EditText
@@ -24,7 +25,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter your Password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:minHeight="48dp" />
+
+    <!-- Edit text for confirm password -->
+    <EditText
+        android:id="@+id/confirmpasswd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm your Password"
+        android:inputType="textPassword"
+        android:minHeight="48dp" />
 
     <!-- Button for register with text "Register" -->
     <Button

@@ -18,7 +18,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 public class RegistrationActivity extends AppCompatActivity {
 
-    private EditText emailTextView, passwordTextView;
+    private EditText emailTextView, passwordTextView, confirmPasswordTextView;
     private Button Btn, BtnLogin;
     private ProgressBar progressbar;
     private FirebaseAuth mAuth;
@@ -34,6 +34,7 @@ public class RegistrationActivity extends AppCompatActivity {
         // initialising all views through id defined above
         emailTextView = findViewById(R.id.email);
         passwordTextView = findViewById(R.id.passwd);
+        confirmPasswordTextView = findViewById(R.id.confirmpasswd);
         Btn = findViewById(R.id.btnregister);
         BtnLogin = findViewById(R.id.btnLogin2);
         progressbar = findViewById(R.id.progressbar);
@@ -55,9 +56,10 @@ public class RegistrationActivity extends AppCompatActivity {
         progressbar.setVisibility(View.VISIBLE);
 
         // Take the value of two edit texts in Strings
-        String email, password;
+        String email, password, confirmPassword;
         email = emailTextView.getText().toString();
         password = passwordTextView.getText().toString();
+        confirmPassword = confirmPasswordTextView.getText().toString();
 
         // Validations for input email and password
         if (TextUtils.isEmpty(email)) {
@@ -70,6 +72,13 @@ public class RegistrationActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(getApplicationContext(),
                             "Please enter password!",
+                            Toast.LENGTH_LONG)
+                    .show();
+            return;
+        }
+        if (TextUtils.isEmpty(confirmPassword)) {
+            Toast.makeText(getApplicationContext(),
+                            "Please confirm password!",
                             Toast.LENGTH_LONG)
                     .show();
             return;
