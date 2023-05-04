@@ -162,8 +162,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     float pressure = jsonObjectMain.getInt("pressure");
                     int humidity = jsonObjectMain.getInt("humidity");
                     //int conditionCode = response.getJSONArray("weather").getJSONObject(0).getInt("id");
-                    int conditionCode = jsonObjectWeather.getInt("id");
-                    String iconCode = jsonObjectWeather.getString("icon");
+                    int condition = jsonObjectWeather.getInt("id");
+                    String icon = jsonObjectWeather.getString("icon");
                     //String iconCode = response.getJSONArray("weather").getJSONObject(0).getString("icon");
                     JSONObject jsonObjectWind = jsonResponse.getJSONObject("wind");
                     String wind = jsonObjectWind.getString("speed");

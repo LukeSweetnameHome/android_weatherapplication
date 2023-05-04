@@ -1,5 +1,6 @@
 package uk.ac.abertay.cmp309.project_weather;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.bumptech.glide.Glide;
 
@@ -28,30 +30,7 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
         String iconUrl = "https://openweathermap.org/img/w/" + iconCode + ".png";
         String filename = "icon_" + iconCode + ".png";
         File file = new File(context.getCacheDir(), filename);
-
-        if (file.exists()) {
-            // Load the icon from cache if it exists
-            return Drawable.createFromPath(file.getAbsolutePath());
-        } else {
-            // Download and cache the icon if it doesn't exist in cache
-            try {
-                InputStream inputStream = (InputStream) new URL(iconUrl).getContent();
-                FileOutputStream outputStream = new FileOutputStream(file);
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = inputStream.read(buffer)) > 0) {
-                    outputStream.write(buffer, 0, length);
-                }
-                outputStream.flush();
-                outputStream.close();
-                inputStream.close();
-                return Drawable.createFromStream(new FileInputStream(file), "src name");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }*/
+}*/
 
     private void updateWeather(int conditionCode, String iconCode) {
         // Get the weather condition text and icon drawable
@@ -135,15 +114,16 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
         return conditionText;
     }
 
-    private ImageView weatherIcon;
-    ImageView icon_Image_View;
+    private ImageView icon_Image_View;
+    private CardView cardView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-
+        cardView = findViewById(R.id.cardView);
         icon_Image_View = findViewById(R.id.icon_Image_View);
         temperatureTextView = findViewById(R.id.temperatureTextView);
         locationTextView = findViewById(R.id.locationTextView);
@@ -170,9 +150,10 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
             JSONObject weatherObject = weather.getJSONObject(0);
             String description = weatherObject.getString("description");
 
-            int conditionCode = getIntent().getIntExtra("condition_code", -1);
-            String iconCode = getIntent().getStringExtra("icon_code");
-            updateWeather(conditionCode, iconCode);
+            int condition = getIntent().getIntExtra("condition_code", -1);
+
+            //String iconCode = getIntent().getStringExtra("icon_code");
+            //updateWeather(conditionCode, iconCode);
             //int conditionCode = weatherObject.getInt("condition_code");
             //String iconCode = weatherObject.getString("icon_code");
 
@@ -180,9 +161,13 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
             double feelsLike = main.getDouble("feels_like") - 273.15;
             String feelslikev2 = df.format(feelsLike);
 
-            Glide.with(getApplicationContext())
-                    .load("https://openweathermap.org/img/w/" + iconCode + ".png")
-                    .into(icon_Image_View);
+
+            weather = jsonResponse.getJSONArray("weather");
+            weatherObject = weather.getJSONObject(0);
+            String icon = weatherObject.getString("icon");
+            String iconUrl = "https://openweathermap.org/img/w/" + icon + ".png";
+            Context context = this;
+            Glide.with(context).load(iconUrl).into(icon_Image_View);
 
 //            updateWeather(conditionCode, iconCode);
 
