@@ -45,12 +45,7 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 
-// API Key
-// http://api.openweathermap.org/
-// http://api.openweathermap.org/data/2.5/weather?q=London,UK&APPID=4e2322456db9e681dcd39712eb48af6b
-// http://api.openweathermap.org/?=London,&api=4e2322456db9e681dcd39712eb48af6b
-
-public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     EditText editTextLocationName;
     private Switch currentLocationSwitch;
     private com.google.android.gms.location.LocationRequest locationRequest;
@@ -76,19 +71,15 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         myIntent = new Intent(this, WeatherActivity.class);
 
-        addressText = findViewById(R.id.addressText);
-
         locationRequest = com.google.android.gms.location.LocationRequest.create();
         locationRequest.setPriority(com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(2000);
-        /*LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5000);
-        locationRequest.setFastestInterval(2000);*/
 
 
-        // start of new
+        // Try to implement wifi checking
+        //<uses-permission android:name="android.permission.INTERNET" />
+
         LocationCallback locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -103,17 +94,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         };
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            // Try to look through this
             return;
         }
         LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-        // end of new
 
         currentLocationSwitch = findViewById(R.id.currentLocationSwitch);
         if (currentLocationSwitch != null) {
@@ -121,9 +105,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
         textView2 = findViewById(R.id.textView2);
         titleTextView = findViewById(R.id.titleTextView);
-
-        //getResources().getDrawable(R.drawable.fog_1);
-        //getResources().getDrawable(R.drawable)
     }
 
     public void getWeatherDetails(View view) {
@@ -167,10 +148,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     double feelsLike = jsonObjectMain.getDouble("feels_like") - 273.15;
                     float pressure = jsonObjectMain.getInt("pressure");
                     int humidity = jsonObjectMain.getInt("humidity");
-                    //int conditionCode = response.getJSONArray("weather").getJSONObject(0).getInt("id");
-                    int conditionCode = jsonObjectWeather.getInt("id");
-                    String iconCode = jsonObjectWeather.getString("icon");
-                    //String iconCode = response.getJSONArray("weather").getJSONObject(0).getString("icon");
+                    int condition = jsonObjectWeather.getInt("id");
+                    String icon = jsonObjectWeather.getString("icon");
                     JSONObject jsonObjectWind = jsonResponse.getJSONObject("wind");
                     String wind = jsonObjectWind.getString("speed");
                     JSONObject jsonObjectClouds = jsonResponse.getJSONObject("clouds");
@@ -232,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                         double latitude = locationResult.getLocations().get(index).getLatitude();
                                         double longitude = locationResult.getLocations().get(index).getLongitude();
 
-                                        addressText.setText("Latitude: " + latitude + "\n" + "Longitude: " + longitude);
                                     }
                                 }
                             }, Looper.getMainLooper());
@@ -298,14 +276,17 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         if (locationManager == null) {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        } else {
+            Toast.makeText(this, "GPS is not enabled", Toast.LENGTH_SHORT).show();
         }
 
         isEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         return isEnabled;
+
     }
-    @Override
-    public void onClick(View v) {
-        Button goToLocations = findViewById(R.id.goToLocations);
+
+    //@Override
+    public void handleLocationsButton(View v) {
         Intent intent = new Intent(MainActivity.this, LocationsActivity.class);
         startActivity(intent);
     }
