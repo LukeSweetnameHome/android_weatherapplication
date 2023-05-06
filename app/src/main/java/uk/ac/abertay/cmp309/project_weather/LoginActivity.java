@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         // validations for input email and password
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(getApplicationContext(),
-                            "Please enter email!!",
+                            "Please enter email!",
                             Toast.LENGTH_LONG)
                     .show();
             return;
@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(getApplicationContext(),
-                            "Please enter password!!",
+                            "Please enter password!",
                             Toast.LENGTH_LONG)
                     .show();
             return;
@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                             {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(getApplicationContext(),
-                                                    "Login successful!!",
+                                                    "Login successful!",
                                                     Toast.LENGTH_LONG)
                                             .show();
 
@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     // sign-in failed
                                     Toast.makeText(getApplicationContext(),
-                                                    "Login failed!!",
+                                                    "Login failed!",
                                                     Toast.LENGTH_LONG)
                                             .show();
 

@@ -45,11 +45,6 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 
-// API Key
-// http://api.openweathermap.org/
-// http://api.openweathermap.org/data/2.5/weather?q=London,UK&APPID=4e2322456db9e681dcd39712eb48af6b
-// http://api.openweathermap.org/?=London,&api=4e2322456db9e681dcd39712eb48af6b
-
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     EditText editTextLocationName;
     private Switch currentLocationSwitch;
@@ -76,16 +71,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         myIntent = new Intent(this, WeatherActivity.class);
 
-        addressText = findViewById(R.id.addressText);
-
         locationRequest = com.google.android.gms.location.LocationRequest.create();
         locationRequest.setPriority(com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(2000);
-        /*LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5000);
-        locationRequest.setFastestInterval(2000);*/
+
 
         // Try to implement wifi checking
         //<uses-permission android:name="android.permission.INTERNET" />
@@ -115,9 +105,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
         textView2 = findViewById(R.id.textView2);
         titleTextView = findViewById(R.id.titleTextView);
-
-        //getResources().getDrawable(R.drawable.fog_1);
-        //getResources().getDrawable(R.drawable)
     }
 
     public void getWeatherDetails(View view) {
@@ -161,10 +148,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     double feelsLike = jsonObjectMain.getDouble("feels_like") - 273.15;
                     float pressure = jsonObjectMain.getInt("pressure");
                     int humidity = jsonObjectMain.getInt("humidity");
-                    //int conditionCode = response.getJSONArray("weather").getJSONObject(0).getInt("id");
                     int condition = jsonObjectWeather.getInt("id");
                     String icon = jsonObjectWeather.getString("icon");
-                    //String iconCode = response.getJSONArray("weather").getJSONObject(0).getString("icon");
                     JSONObject jsonObjectWind = jsonResponse.getJSONObject("wind");
                     String wind = jsonObjectWind.getString("speed");
                     JSONObject jsonObjectClouds = jsonResponse.getJSONObject("clouds");
@@ -226,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                         double latitude = locationResult.getLocations().get(index).getLatitude();
                                         double longitude = locationResult.getLocations().get(index).getLongitude();
 
-                                        addressText.setText("Latitude: " + latitude + "\n" + "Longitude: " + longitude);
                                     }
                                 }
                             }, Looper.getMainLooper());
@@ -303,7 +287,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     //@Override
     public void handleLocationsButton(View v) {
-        //Button goToLocations = findViewById(R.id.goToLocations);
         Intent intent = new Intent(MainActivity.this, LocationsActivity.class);
         startActivity(intent);
     }

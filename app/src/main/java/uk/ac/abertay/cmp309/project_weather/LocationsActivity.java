@@ -32,7 +32,6 @@ import java.util.Map;
 public class LocationsActivity extends AppCompatActivity {
     Button goHomeButton, newLocationButton, viewWeatherButton;
     EditText editTextLocation;
-
     FirebaseFirestore db;
 
     private final String url = "http://api.openweathermap.org/data/2.5/weather";
@@ -48,30 +47,6 @@ public class LocationsActivity extends AppCompatActivity {
         viewWeatherButton = findViewById(R.id.viewWeatherButton);
         editTextLocation= findViewById(R.id.editTextLocation);
         db = FirebaseFirestore.getInstance();
-//        newLocationButton = findViewById(R.id.newLocationButton);
-//        newLocationButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String Location = editTextLocation.getText().toString();
-//                Map<String, Object> location = new HashMap<>();
-//                location.put("Location", Location);
-//
-//
-//                db.collection("locations")
-//                        .add(location)
-//                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                            @Override
-//                            public void onSuccess(DocumentReference documentReference) {
-//                                Toast.makeText(LocationsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }).addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                Toast.makeText(LocationsActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//            }
-//        });
     }
 
     
@@ -101,10 +76,8 @@ public class LocationsActivity extends AppCompatActivity {
                     double feelsLike = jsonObjectMain.getDouble("feels_like") - 273.15;
                     float pressure = jsonObjectMain.getInt("pressure");
                     int humidity = jsonObjectMain.getInt("humidity");
-                    //int conditionCode = response.getJSONArray("weather").getJSONObject(0).getInt("id");
-                    int conditionCode = jsonObjectWeather.getInt("id");
-                    String iconCode = jsonObjectWeather.getString("icon");
-                    //String iconCode = response.getJSONArray("weather").getJSONObject(0).getString("icon");
+                    int condition = jsonObjectWeather.getInt("id");
+                    String icon = jsonObjectWeather.getString("icon");
                     JSONObject jsonObjectWind = jsonResponse.getJSONObject("wind");
                     String wind = jsonObjectWind.getString("speed");
                     JSONObject jsonObjectClouds = jsonResponse.getJSONObject("clouds");
