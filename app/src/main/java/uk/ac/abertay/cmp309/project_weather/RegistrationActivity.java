@@ -13,15 +13,26 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.net.PasswordAuthentication;
+import java.util.HashMap;
+import java.util.Map;
+
 public class RegistrationActivity extends AppCompatActivity {
 
     private EditText emailTextView, passwordTextView, confirmPasswordTextView;
     private Button Btn, BtnLogin;
     private ProgressBar progressbar;
     private FirebaseAuth mAuth;
+    FirebaseFirestore db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +41,9 @@ public class RegistrationActivity extends AppCompatActivity {
 
         // taking FirebaseAuth instance
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-        // initialising all views through id defined above
+        // initialising all views
         emailTextView = findViewById(R.id.email);
         passwordTextView = findViewById(R.id.passwd);
         confirmPasswordTextView = findViewById(R.id.confirmpasswd);
@@ -45,10 +57,35 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 registerNewUser();
+                writeNewUser();
             }
         });
     }
+    private void writeNewUser() {
 
+        emailTextView = findViewById(R.id.email);
+        passwordTextView = findViewById(R.id.passwd);
+        String Email = emailTextView.getText().toString();
+        String Password = passwordTextView.getText().toString();
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("Email",Email);
+        user.put("Password",Password);
+
+        db.collection("users")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(RegistrationActivity.this, "Successful Database Write", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(RegistrationActivity.this, "Failed Database Write", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
     private void registerNewUser()
     {
 
@@ -122,7 +159,9 @@ public class RegistrationActivity extends AppCompatActivity {
                         }
                     }
                 });
+
     }
+
     public void handleLogin (View v){
         Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
         startActivity(intent);
