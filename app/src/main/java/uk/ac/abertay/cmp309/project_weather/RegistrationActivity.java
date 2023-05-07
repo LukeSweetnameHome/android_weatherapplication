@@ -61,31 +61,6 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
-    private void writeNewUser() {
-
-        emailTextView = findViewById(R.id.email);
-        passwordTextView = findViewById(R.id.passwd);
-        String Email = emailTextView.getText().toString();
-        String Password = passwordTextView.getText().toString();
-
-        Map<String, Object> user = new HashMap<>();
-        user.put("Email",Email);
-        user.put("Password",Password);
-
-        db.collection("users")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(RegistrationActivity.this, "Successful Database Write", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(RegistrationActivity.this, "Failed Database Write", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
     private void registerNewUser()
     {
 
@@ -161,7 +136,31 @@ public class RegistrationActivity extends AppCompatActivity {
                 });
 
     }
+    private void writeNewUser() {
 
+        emailTextView = findViewById(R.id.email);
+        passwordTextView = findViewById(R.id.passwd);
+        String Email = emailTextView.getText().toString();
+        String Password = passwordTextView.getText().toString();
+
+            Map<String, Object> user = new HashMap<>();
+            user.put("Email", Email);
+            user.put("Password", Password);
+
+            db.collection("users")
+                    .add(user)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Toast.makeText(RegistrationActivity.this, "Successful Database Write", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(RegistrationActivity.this, "Failed Database Write", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     public void handleLogin (View v){
         Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
         startActivity(intent);

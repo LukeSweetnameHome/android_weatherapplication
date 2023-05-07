@@ -38,6 +38,9 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.ktx.Firebase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,12 +54,16 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private com.google.android.gms.location.LocationRequest locationRequest;
     private Intent myIntent;
     TextView textView2, titleTextView;
-    private TextView addressText;
+    TextView userEmail;
     private static final String TAG = "MainActivity";
 
     Button goToLocations;
+    Button userLogout;
     private double latitude, longitude;
     //private double longitude;
+
+    FirebaseAuth mAuth;
+    FirebaseUser firebaseUser;
 
     private final String url = "http://api.openweathermap.org/data/2.5/weather";
     private final String appid = "4e2322456db9e681dcd39712eb48af6b";
@@ -67,7 +74,31 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // directing variable names to correct textviews or buttons
         editTextLocationName = findViewById(R.id.editTextLocationName);
+        userEmail = findViewById(R.id.tvUserEmail);
+        userLogout = findViewById(R.id.btnLogout);
+
+        // Initialising firebase user auth
+        mAuth = FirebaseAuth.getInstance();
+        firebaseUser = mAuth.getCurrentUser();
+
+        // Inserting user email into text box
+        userEmail.setText(firebaseUser.getEmail());
+
+        // Attaching logout method to Sign out button on main activity
+        userLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
+
 
         myIntent = new Intent(this, WeatherActivity.class);
 

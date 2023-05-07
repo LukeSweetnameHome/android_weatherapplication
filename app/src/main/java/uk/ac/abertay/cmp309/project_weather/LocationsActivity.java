@@ -124,12 +124,12 @@ public class LocationsActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(LocationsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LocationsActivity.this, "Location Added", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(LocationsActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LocationsActivity.this, "Location Not Added", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
