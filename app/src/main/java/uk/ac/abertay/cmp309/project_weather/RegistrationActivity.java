@@ -58,7 +58,6 @@ public class RegistrationActivity extends AppCompatActivity {
             {
                 // Assigning following methods to btn onclick listener
                 registerNewUser();
-                writeNewUser();
             }
         });
     }
@@ -115,7 +114,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                             // hide the progress bar
                             progressbar.setVisibility(View.GONE);
-
+                            writeNewUser();
                             // if the user created intent to login activity
                             Intent intent
                                     = new Intent(RegistrationActivity.this,
