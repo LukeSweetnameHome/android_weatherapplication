@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 public class LoginActivity extends AppCompatActivity {
 
+    // Initialise variables
     private EditText emailTextView, passwordTextView;
     private Button Btn;
     private ProgressBar progressbar;
@@ -59,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         email = emailTextView.getText().toString();
         password = passwordTextView.getText().toString();
 
-        // validations for input email and password
+        // validations for input email
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(getApplicationContext(),
                             "Please enter email!",
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                     .show();
             return;
         }
-
+        // validate password is entered
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(getApplicationContext(),
                             "Please enter password!",
@@ -76,10 +77,11 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // signin existing user
+        // sign in existing user
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(
                         new OnCompleteListener<AuthResult>() {
+                            // on successful login
                             @Override
                             public void onComplete(
                                     @NonNull Task<AuthResult> task)

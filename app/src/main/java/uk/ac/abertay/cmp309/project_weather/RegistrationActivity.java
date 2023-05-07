@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegistrationActivity extends AppCompatActivity {
-
+    // Initialising variables
     private EditText emailTextView, passwordTextView, confirmPasswordTextView;
     private Button Btn, BtnLogin;
     private ProgressBar progressbar;
@@ -56,6 +56,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                // Assigning following methods to btn onclick listener
                 registerNewUser();
                 writeNewUser();
             }
@@ -88,6 +89,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     .show();
             return;
         }
+        // confirm password conditional logic
         if (TextUtils.isEmpty(confirmPassword)) {
             Toast.makeText(getApplicationContext(),
                             "Please confirm password!",
@@ -104,6 +106,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task)
                     {
+                        // successful user creation
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(),
                                             "Registration successful!",
@@ -137,13 +140,16 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
     private void writeNewUser() {
-
+    // method to add user to db
+        // initialising variables
         emailTextView = findViewById(R.id.email);
         passwordTextView = findViewById(R.id.passwd);
         String Email = emailTextView.getText().toString();
         String Password = passwordTextView.getText().toString();
 
+            // new firebase map for user object
             Map<String, Object> user = new HashMap<>();
+            // putting email and password results into user collection
             user.put("Email", Email);
             user.put("Password", Password);
 
@@ -151,17 +157,20 @@ public class RegistrationActivity extends AppCompatActivity {
                     .add(user)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
+                        // success db write
                         public void onSuccess(DocumentReference documentReference) {
                             Toast.makeText(RegistrationActivity.this, "Successful Database Write", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
+                        // failed db write
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText(RegistrationActivity.this, "Failed Database Write", Toast.LENGTH_SHORT).show();
                         }
                     });
         }
     public void handleLogin (View v){
+        // intent for home page button
         Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
         startActivity(intent);
     }

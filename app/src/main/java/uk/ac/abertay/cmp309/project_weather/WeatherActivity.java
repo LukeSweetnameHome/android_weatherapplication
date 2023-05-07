@@ -20,6 +20,7 @@ import java.text.DecimalFormat;
 
 public class WeatherActivity extends AppCompatActivity implements View.OnClickListener {
 
+    // initialising variables
     private int conditionCode = 500;
     TextView temperatureTextView, locationTextView, mainTextView, feels_likeTextView;
     DecimalFormat df = new DecimalFormat("#" + "°C");
@@ -32,6 +33,7 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
+        // adding textview results to variables
         cardView = findViewById(R.id.cardView);
         icon_Image_View = findViewById(R.id.icon_Image_View);
         temperatureTextView = findViewById(R.id.temperatureTextView);
@@ -39,7 +41,7 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
         mainTextView = findViewById(R.id.mainTextView);
         feels_likeTextView = findViewById(R.id.feels_likeTextView);
 
-
+        // Obtaining JSON response from MainActivity
         String jsonResponseString = getIntent().getStringExtra("json_response");
 
         try {
@@ -51,7 +53,7 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
             // Get the temperature
             JSONObject main = jsonResponse.getJSONObject("main");
             double temp = main.getDouble("temp") - 273.15;
-            // new
+            // Formatting temp result to be whole number and have degress celcius symbol
             String formatted = df.format(temp);
 
             // Get the weather description
@@ -59,22 +61,26 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
             JSONObject weatherObject = weather.getJSONObject(0);
             String description = weatherObject.getString("description");
 
+            // getting condition code
             int condition = getIntent().getIntExtra("condition_code", -1);
 
-            // Get feels_like
+            // Get feels_like temp
             double feelsLike = main.getDouble("feels_like") - 273.15;
+            // Formatting feels_like temp to same as temp
             String feelslikev2 = df.format(feelsLike);
 
-
+            // getting iconcode from JSON response
             weather = jsonResponse.getJSONArray("weather");
             weatherObject = weather.getJSONObject(0);
+            // Defining icon as iconcode
             String icon = weatherObject.getString("icon");
+            // defining iconUrl as the openweather image library + icon variable + png extension
             String iconUrl = "https://openweathermap.org/img/w/" + icon + ".png";
             Context context = this;
+            // using glide to add iconUrl variable to image view within cardview
             Glide.with(context).load(iconUrl).into(icon_Image_View);
 
             // Use the retrieved data
-
             String formattedTemp = df.format(temp); // format temperature with one decimal place
             temperatureTextView.setText(formattedTemp);
             locationTextView.setText(locationName);
@@ -88,6 +94,7 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
         }
     @Override
     public void onClick(View v) {
+        // Home button
         Intent intent = new Intent(WeatherActivity.this, MainActivity.class);
         startActivity(intent);
     }
