@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
@@ -40,6 +42,8 @@ public class LocationsActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser firebaseUser;
     String userID;
+
+    TextView userTV;
 
     // Assigning base API to url variable
     private final String url = "http://api.openweathermap.org/data/2.5/weather";
@@ -142,24 +146,28 @@ public class LocationsActivity extends AppCompatActivity {
         String Location = editTextLocation.getText().toString();
         // assigning firebase current user to variable userID
         userID = mAuth.getCurrentUser().getUid();
+        userTV = findViewById(R.id.tvUserID);
+
         // Starting new firebase map for storage
         Map<String, Object> location = new HashMap<>();
         location.put("Location", Location);
             // adding data to location collection
-            db.collection("location")
-                .add(location)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    // Successful database write message
-                    public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(LocationsActivity.this, "Location Added", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    // Failed database write message
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(LocationsActivity.this, "Location Not Added", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            db.collection("users").document(userID)
+                    .update("Location", Location)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        // Successful database write message
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(LocationsActivity.this, "Location Added", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        // Failed database write message
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(LocationsActivity.this, "Location Not Added", Toast.LENGTH_SHORT).show();
+                            Log.e("LocationsActivity", "Error adding location", e);
+                        }
+                    });
+            userTV.setText(firebaseUser.getUid());
     }
 }

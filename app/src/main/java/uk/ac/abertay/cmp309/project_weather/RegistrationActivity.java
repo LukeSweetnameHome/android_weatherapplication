@@ -32,6 +32,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private ProgressBar progressbar;
     private FirebaseAuth mAuth;
     FirebaseFirestore db;
+    String userID;
 
 
     @Override
@@ -143,6 +144,7 @@ public class RegistrationActivity extends AppCompatActivity {
         // initialising variables
         emailTextView = findViewById(R.id.email);
         passwordTextView = findViewById(R.id.passwd);
+        userID = mAuth.getCurrentUser().getUid();
         String Email = emailTextView.getText().toString();
         String Password = passwordTextView.getText().toString();
 
@@ -151,6 +153,7 @@ public class RegistrationActivity extends AppCompatActivity {
             // putting email and password results into user collection
             user.put("Email", Email);
             user.put("Password", Password);
+            user.put("User ID", userID);
 
             db.collection("users")
                     .add(user)
