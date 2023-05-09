@@ -117,4 +117,9 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
     }
+    public void handleRegister (View v){
+        // intent for register button
+        Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
+        startActivity(intent);
+    }
 }
