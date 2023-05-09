@@ -58,9 +58,30 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 // Assigning following methods to btn onclick listener
-                registerNewUser();
+                validatePassword();
+
             }
         });
+    }
+    private boolean validatePassword(){
+        String passwordInput = passwordTextView.getText().toString().trim();
+        String confirmpasswordInput = confirmPasswordTextView.getText().toString().trim();
+        if (passwordInput.isEmpty()){
+            Toast.makeText(this, "Password needed", Toast.LENGTH_SHORT).show();
+            return false;
+        } if (passwordInput.length()<5){
+            Toast.makeText(this, "Password must be at least 5 characters", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!passwordInput.equals(confirmpasswordInput)){
+            Toast.makeText(this, "Password does NOT match", Toast.LENGTH_SHORT).show();
+            return false;
+        } else{
+            Toast.makeText(this, "Password does match", Toast.LENGTH_SHORT).show();
+            registerNewUser();
+            return true;
+        }
+
     }
     private void registerNewUser()
     {
