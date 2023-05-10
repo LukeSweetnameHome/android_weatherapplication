@@ -1,11 +1,15 @@
 package uk.ac.abertay.cmp309.project_weather;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,19 +22,27 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LocationsActivity extends AppCompatActivity {
@@ -44,6 +56,8 @@ public class LocationsActivity extends AppCompatActivity {
     String userID;
 
     TextView userTV;
+
+    ListView locationsListView;
 
     // Assigning base API to url variable
     private final String url = "http://api.openweathermap.org/data/2.5/weather";
@@ -62,12 +76,42 @@ public class LocationsActivity extends AppCompatActivity {
         viewWeatherButton = findViewById(R.id.viewWeatherButton);
         editTextLocation= findViewById(R.id.editTextLocation);
         db = FirebaseFirestore.getInstance();
-
         // Initialising firebase user auth
         mAuth = FirebaseAuth.getInstance();
         // getting current firebase user
         firebaseUser = mAuth.getCurrentUser();
+
+
+        if (userID != null) {
+            CollectionReference locationsRef = FirebaseFirestore.getInstance().collection("Locations");
+
+            Query query = locationsRef;
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+
+                        for (DocumentSnapshot documentSnapshot : querySnapshot) {
+
+                            String Location = documentSnapshot.getString("Location");
+
+                            data.add(Location);
+                        }
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
+                                android.R.layout.simple_list_item_1, data);
+
+                        locationsListView.setAdapter(adapter);
+                    } else {
+                        Log.d(TAG, "Error getting documents", task.getException());
+                    }
+                }
+            });
+        }
     }
+
 
     
     public void getWeatherDetails(View view) {
@@ -175,4 +219,5 @@ public class LocationsActivity extends AppCompatActivity {
                     });
             userTV.setText(firebaseUser.getUid());
     }
+
 }
