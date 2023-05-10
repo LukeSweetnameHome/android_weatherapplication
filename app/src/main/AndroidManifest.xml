@@ -25,7 +25,8 @@
             android:exported="false" />
         <activity
             android:name=".LocationsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".WeatherActivity"
             android:exported="false" />

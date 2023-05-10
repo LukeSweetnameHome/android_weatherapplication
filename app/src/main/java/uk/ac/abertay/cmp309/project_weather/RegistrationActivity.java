@@ -21,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.net.PasswordAuthentication;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -122,6 +121,7 @@ public class RegistrationActivity extends AppCompatActivity {
         // create new user or register new user
         mAuth
                 .createUserWithEmailAndPassword(email, password)
+
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
                     @Override
@@ -136,12 +136,13 @@ public class RegistrationActivity extends AppCompatActivity {
 
                             // hide the progress bar
                             progressbar.setVisibility(View.GONE);
-                            writeNewUser();
+                            //writeNewUser();
                             // if the user created intent to login activity
                             Intent intent
                                     = new Intent(RegistrationActivity.this,
                                     MainActivity.class);
                             startActivity(intent);
+                            writeNewUser();
                         }
                         else {
 
@@ -164,24 +165,24 @@ public class RegistrationActivity extends AppCompatActivity {
     // method to add user to db
         // initialising variables
         emailTextView = findViewById(R.id.email);
-        passwordTextView = findViewById(R.id.passwd);
-        userID = mAuth.getCurrentUser().getUid();
         String Email = emailTextView.getText().toString();
-        String Password = passwordTextView.getText().toString();
+
+        String userId = mAuth.getCurrentUser().getUid();
+
 
             // new firebase map for user object
             Map<String, Object> user = new HashMap<>();
             // putting email and password results into user collection
             user.put("Email", Email);
-            user.put("Password", Password);
-            user.put("User ID", userID);
-
+            user.put("User ID", userId);
+        // scroll view within list view
             db.collection("users")
                     .add(user)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         // success db write
                         public void onSuccess(DocumentReference documentReference) {
+
                             Toast.makeText(RegistrationActivity.this, "Successful Database Write", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {

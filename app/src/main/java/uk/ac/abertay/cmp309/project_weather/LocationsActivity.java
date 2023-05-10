@@ -22,8 +22,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
@@ -149,10 +147,10 @@ public class LocationsActivity extends AppCompatActivity {
         userTV = findViewById(R.id.tvUserID);
 
         // Starting new firebase map for storage
-        Map<String, Object> location = new HashMap<>();
-        location.put("Location", Location);
+        Map<String, Object> user = new HashMap<>();
+        user.put("Location", Location);
             // adding data to location collection
-            db.collection("users").document(userID)
+            db.collection("users").document(mAuth.getCurrentUser().getUid())
                     .update("Location", Location)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
