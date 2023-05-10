@@ -18,7 +18,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -176,12 +175,12 @@ public class RegistrationActivity extends AppCompatActivity {
             user.put("Email", Email);
             user.put("User ID", userId);
         // scroll view within list view
-            db.collection("users")
-                    .add(user)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            db.collection("users").document(userId)
+                    .set(user)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         // success db write
-                        public void onSuccess(DocumentReference documentReference) {
+                        public void onSuccess(Void aVoid) {
 
                             Toast.makeText(RegistrationActivity.this, "Successful Database Write", Toast.LENGTH_SHORT).show();
                         }

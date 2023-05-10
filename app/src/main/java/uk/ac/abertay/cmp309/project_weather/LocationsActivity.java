@@ -22,6 +22,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
@@ -145,17 +147,22 @@ public class LocationsActivity extends AppCompatActivity {
         // assigning firebase current user to variable userID
         userID = mAuth.getCurrentUser().getUid();
         userTV = findViewById(R.id.tvUserID);
+        CollectionReference parentCollectionRef = db.collection("users");
+        DocumentReference parentDocRef = parentCollectionRef.document(userID);
+
+        CollectionReference subCollectionRef = parentDocRef.collection("Locations");
+
 
         // Starting new firebase map for storage
-        Map<String, Object> user = new HashMap<>();
-        user.put("Location", Location);
-            // adding data to location collection
-            db.collection("users").document(mAuth.getCurrentUser().getUid())
-                    .update("Location", Location)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+        Map<String, Object> location = new HashMap<>();
+        location.put("Location", Location);
+            // adding location data to user collection
+            //DocumentReference  =  db.collection("users").document(mAuth.getCurrentUser().getUid()).collection("Location").document()
+                    subCollectionRef.add(location)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         // Successful database write message
-                        public void onSuccess(Void aVoid) {
+                        public void onSuccess(DocumentReference messageRef) {
                             Toast.makeText(LocationsActivity.this, "Location Added", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
