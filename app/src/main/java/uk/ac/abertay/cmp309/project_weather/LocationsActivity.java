@@ -56,8 +56,9 @@ public class LocationsActivity extends AppCompatActivity {
     String userID;
 
     TextView userTV;
-
     ListView locationsListView;
+    ArrayList<LocationList> locationListsArrayList;
+    FirebaseFirestore db;
 
     // Assigning base API to url variable
     private final String url = "http://api.openweathermap.org/data/2.5/weather";
@@ -82,36 +83,62 @@ public class LocationsActivity extends AppCompatActivity {
         firebaseUser = mAuth.getCurrentUser();
 
 
-        if (userID != null) {
-            CollectionReference locationsRef = FirebaseFirestore.getInstance().collection("Locations");
+        // below line is use to initialize our variables
+        locationsListView = findViewById(R.id.locationsListView);
+        locationListsArrayList = new ArrayList<>();
 
-            Query query = locationsRef;
-            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        // initializing our variable for firebase
+        // firestore and getting its instance.
+        db = FirebaseFirestore.getInstance();
 
-                    if (task.isSuccessful()) {
-                        QuerySnapshot querySnapshot = task.getResult();
-
-                        for (DocumentSnapshot documentSnapshot : querySnapshot) {
-
-                            String Location = documentSnapshot.getString("Location");
-
-                            data.add(Location);
-                        }
-
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
-                                android.R.layout.simple_list_item_1, data);
-
-                        locationsListView.setAdapter(adapter);
-                    } else {
-                        Log.d(TAG, "Error getting documents", task.getException());
-                    }
-                }
-            });
-        }
+        // here we are calling a method
+        // to load data in our list view.
+        loadDatainListview();
     }
+    private void loadDatainListview() {
+        // below line is use to get data from Firebase
+        // firestore using collection in android.
+        db.collection("users").document(userID).collection("Locations")
+                .document().get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        // after getting the data we are calling on success method
+                        // and inside this method we are checking if the received
+                        // query snapshot is empty or not.
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // if the snapshot is not empty we are hiding
+                            // our progress bar and adding our data in a list.
+                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                            for (DocumentSnapshot d : list) {
+                                // after getting this list we are passing
+                                // that list to our object class.
+                                LocationList locationList = d.toObject(LocationList.class);
 
+                                // after getting data from Firebase we are
+                                // storing that data in our array list
+                                locationListsArrayList.add(locationList);
+                            }
+                            // after that we are passing our array list to our adapter class.
+                            LocationLVAdapter adapter = new LocationLVAdapter(LocationsActivity.this, locationListArrayList);
+
+                            // after passing this array list to our adapter
+                            // class we are setting our adapter to our list view.
+                            locationsListView.setAdapter(adapter);
+                        } else {
+                            // if the snapshot is empty we are displaying a toast message.
+                            Toast.makeText(LocationsActivity.this, "No data found in Database", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // we are displaying a toast message
+                        // when we get any error from Firebase.
+                        Toast.makeText(LocationsActivity.this, "Fail to load data..", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
     
     public void getWeatherDetails(View view) {
