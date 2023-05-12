@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LocationsActivity extends AppCompatActivity {
 
@@ -55,8 +56,6 @@ public class LocationsActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
     String userID;
 
-    TextView userTV;
-
     ListView locationsListView;
 
     // Assigning base API to url variable
@@ -65,8 +64,10 @@ public class LocationsActivity extends AppCompatActivity {
     // Assigning api key to appid variable
     private final String appid = "4e2322456db9e681dcd39712eb48af6b";
 
+    private static final String USERS = "users";
+    private static final String LOCATIONS = "Locations";
 
-    
+    private ArrayAdapter<Preferences> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,38 +82,48 @@ public class LocationsActivity extends AppCompatActivity {
         // getting current firebase user
         firebaseUser = mAuth.getCurrentUser();
 
+        ListView locationsListView = findViewById(R.id.locationsListView);
+        adapter = new ArrayAdapter<Preferences>(
+                this,
+                android.R.layout.simple_list_item_1,
+                new ArrayList<Preferences>()
+        );
+        locationsListView.setAdapter(adapter);
 
-        if (userID != null) {
-            CollectionReference locationsRef = FirebaseFirestore.getInstance().collection("Locations");
 
-            Query query = locationsRef;
-            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                    if (task.isSuccessful()) {
-                        QuerySnapshot querySnapshot = task.getResult();
-
-                        for (DocumentSnapshot documentSnapshot : querySnapshot) {
-
-                            String Location = documentSnapshot.getString("Location");
-
-                            data.add(Location);
-                        }
-
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
-                                android.R.layout.simple_list_item_1, data);
-
-                        locationsListView.setAdapter(adapter);
-                    } else {
-                        Log.d(TAG, "Error getting documents", task.getException());
-                    }
-                }
-            });
-        }
+        //userID = Objects.requireNonNull(firebaseUser).getUid();
     }
 
+    public void onRefreshClick(View view){
+        userID = mAuth.getCurrentUser().getUid();
 
+        Log.d(TAG, "onRefreshClick called");
+        db.collection(USERS).document(userID).collection("Locations")
+                .get()
+        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                ArrayList<Preferences> preferences = new ArrayList<>();
+                for (QueryDocumentSnapshot document: queryDocumentSnapshots){
+                    Log.d(TAG, "Successful retrieve");
+                    Log.d(TAG, "user id" + userID);
+                    Log.d(TAG, document.getId() + " =>" + document.getData());
+                    Log.d(TAG, document.getReference().collection(LOCATIONS) + " =>" + (document.getData()));
+                    Preferences p = document.toObject(Preferences.class);
+                    preferences.add(p);
+                    Log.d(TAG, "Preferences object" + " " + p.getLocation());
+                }
+                adapter.clear();
+                adapter.addAll(preferences);
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Error getting documents.", e);
+            }
+        });
+    }
     
     public void getWeatherDetails(View view) {
 
@@ -190,7 +201,6 @@ public class LocationsActivity extends AppCompatActivity {
         String Location = editTextLocation.getText().toString();
         // assigning firebase current user to variable userID
         userID = mAuth.getCurrentUser().getUid();
-        userTV = findViewById(R.id.tvUserID);
         CollectionReference parentCollectionRef = db.collection("users");
         DocumentReference parentDocRef = parentCollectionRef.document(userID);
 
@@ -217,7 +227,6 @@ public class LocationsActivity extends AppCompatActivity {
                             Log.e("LocationsActivity", "Error adding location", e);
                         }
                     });
-            userTV.setText(firebaseUser.getUid());
     }
 
 }
