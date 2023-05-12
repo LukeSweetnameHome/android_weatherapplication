@@ -43,10 +43,15 @@
         android:id="@+id/btnregister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="handleRegisterWrite"
         android:text="Register" />
 
     <!-- ProgressBar for loading time -->
+    <TextView
+        android:id="@+id/alreadyRegistered"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Already Registered? Login Below" />
+
     <Button
         android:id="@+id/btnLogin2"
         android:layout_width="match_parent"

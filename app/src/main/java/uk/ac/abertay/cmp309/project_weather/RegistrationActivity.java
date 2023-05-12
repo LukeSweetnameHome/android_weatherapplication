@@ -18,20 +18,19 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.net.PasswordAuthentication;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RegistrationActivity extends AppCompatActivity {
-
+    // Initialising variables
     private EditText emailTextView, passwordTextView, confirmPasswordTextView;
     private Button Btn, BtnLogin;
     private ProgressBar progressbar;
     private FirebaseAuth mAuth;
     FirebaseFirestore db;
+    String userID;
 
 
     @Override
@@ -56,10 +55,31 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                registerNewUser();
-                writeNewUser();
+                // Assigning following methods to btn onclick listener
+                validatePassword();
+
             }
         });
+    }
+    private boolean validatePassword(){
+        String passwordInput = passwordTextView.getText().toString().trim();
+        String confirmpasswordInput = confirmPasswordTextView.getText().toString().trim();
+        if (passwordInput.isEmpty()){
+            Toast.makeText(this, "Password needed", Toast.LENGTH_SHORT).show();
+            return false;
+        } if (passwordInput.length()<5){
+            Toast.makeText(this, "Password must be at least 5 characters", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!passwordInput.equals(confirmpasswordInput)){
+            Toast.makeText(this, "Password does NOT match", Toast.LENGTH_SHORT).show();
+            return false;
+        } else{
+            Toast.makeText(this, "Password does match", Toast.LENGTH_SHORT).show();
+            registerNewUser();
+            return true;
+        }
+
     }
     private void registerNewUser()
     {
@@ -88,6 +108,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     .show();
             return;
         }
+        // confirm password conditional logic
         if (TextUtils.isEmpty(confirmPassword)) {
             Toast.makeText(getApplicationContext(),
                             "Please confirm password!",
@@ -99,11 +120,13 @@ public class RegistrationActivity extends AppCompatActivity {
         // create new user or register new user
         mAuth
                 .createUserWithEmailAndPassword(email, password)
+
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task)
                     {
+                        // successful user creation
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(),
                                             "Registration successful!",
@@ -112,12 +135,13 @@ public class RegistrationActivity extends AppCompatActivity {
 
                             // hide the progress bar
                             progressbar.setVisibility(View.GONE);
-
+                            //writeNewUser();
                             // if the user created intent to login activity
                             Intent intent
                                     = new Intent(RegistrationActivity.this,
                                     MainActivity.class);
                             startActivity(intent);
+                            writeNewUser();
                         }
                         else {
 
@@ -137,31 +161,39 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
     private void writeNewUser() {
-
+    // method to add user to db
+        // initialising variables
         emailTextView = findViewById(R.id.email);
-        passwordTextView = findViewById(R.id.passwd);
         String Email = emailTextView.getText().toString();
-        String Password = passwordTextView.getText().toString();
 
+        String userId = mAuth.getCurrentUser().getUid();
+
+
+            // new firebase map for user object
             Map<String, Object> user = new HashMap<>();
+            // putting email and password results into user collection
             user.put("Email", Email);
-            user.put("Password", Password);
-
-            db.collection("users")
-                    .add(user)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            user.put("User ID", userId);
+        // scroll view within list view
+            db.collection("users").document(userId)
+                    .set(user)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
-                        public void onSuccess(DocumentReference documentReference) {
+                        // success db write
+                        public void onSuccess(Void aVoid) {
+
                             Toast.makeText(RegistrationActivity.this, "Successful Database Write", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
+                        // failed db write
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText(RegistrationActivity.this, "Failed Database Write", Toast.LENGTH_SHORT).show();
                         }
                     });
         }
     public void handleLogin (View v){
+        // intent for home page button
         Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
         startActivity(intent);
     }

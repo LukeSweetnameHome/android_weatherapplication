@@ -20,7 +20,8 @@
         android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter your Email" />
+        android:hint="Enter your Email"
+        android:minHeight="48dp" />
 
     <!-- Edit text for password -->
     <EditText
@@ -28,7 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter your Password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:minHeight="48dp" />
 
     <!-- Button for Login with text "Login" -->
     <Button
@@ -43,5 +45,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/notRegistered"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Not Registered? Register Below." />
+
+    <Button
+        android:id="@+id/btnNotRegistered"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="handleRegister"
+        android:text="Register" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
