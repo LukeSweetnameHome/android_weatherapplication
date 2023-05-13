@@ -81,8 +81,10 @@ public class LocationsActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         // getting current firebase user
         firebaseUser = mAuth.getCurrentUser();
-
+        // initialising locationslistview
         ListView locationsListView = findViewById(R.id.locationsListView);
+        // making adapter equal to new adapter creation
+        // initialising arrayadapter and its arguments
         adapter = new ArrayAdapter<Preferences>(
                 this,
                 android.R.layout.simple_list_item_1,
@@ -95,25 +97,31 @@ public class LocationsActivity extends AppCompatActivity {
     }
 
     public void onRefreshClick(View view){
-        userID = mAuth.getCurrentUser().getUid();
 
+        // initialising firebaseuID to be used as document name
+        userID = mAuth.getCurrentUser().getUid();
+        // detailing db path to desired data
         Log.d(TAG, "onRefreshClick called");
         db.collection(USERS).document(userID).collection("Locations")
                 .get()
         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                // creating array list
                 ArrayList<Preferences> preferences = new ArrayList<>();
                 for (QueryDocumentSnapshot document: queryDocumentSnapshots){
                     Log.d(TAG, "Successful retrieve");
                     Log.d(TAG, "user id" + userID);
                     Log.d(TAG, document.getId() + " =>" + document.getData());
                     Log.d(TAG, document.getReference().collection(LOCATIONS) + " =>" + (document.getData()));
+                    // assigning preferences object to p variable
                     Preferences p = document.toObject(Preferences.class);
                     preferences.add(p);
                     Log.d(TAG, "Preferences object" + " " + p.getLocation());
                 }
+                // clearing list of previous preferences
                 adapter.clear();
+                // adding newest preferences to list
                 adapter.addAll(preferences);
             }
         })
@@ -201,6 +209,7 @@ public class LocationsActivity extends AppCompatActivity {
         String Location = editTextLocation.getText().toString();
         // assigning firebase current user to variable userID
         userID = mAuth.getCurrentUser().getUid();
+        // outlining path through firestore to desired storage location
         CollectionReference parentCollectionRef = db.collection("users");
         DocumentReference parentDocRef = parentCollectionRef.document(userID);
 

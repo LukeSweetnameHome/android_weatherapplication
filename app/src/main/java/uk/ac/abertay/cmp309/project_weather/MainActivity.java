@@ -74,8 +74,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     // assigning api key to appid variable
     private final String appid = "4e2322456db9e681dcd39712eb48af6b";
 
-    // DELETE IF FOUND TO BE USELESS
-    // DecimalFormat df = new DecimalFormat("#.#");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,8 +138,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         // initialise current location switch
         currentLocationSwitch = findViewById(R.id.currentLocationSwitch);
         if (currentLocationSwitch != null) {
+            // checking to see if permission has been granted, if it hasn't, then a request to the user is made
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // Try to look through this
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
                 return;
             }

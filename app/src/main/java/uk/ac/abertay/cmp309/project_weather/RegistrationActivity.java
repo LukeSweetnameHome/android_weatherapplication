@@ -61,21 +61,30 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
+    // method for validating password provided by user in the registration process
     private boolean validatePassword(){
+        // declaring input in password & confirmpassword textview as a string
+        // also trimming the spaces if any in both inputs
         String passwordInput = passwordTextView.getText().toString().trim();
         String confirmpasswordInput = confirmPasswordTextView.getText().toString().trim();
+        // conditional for if the password input is empty
         if (passwordInput.isEmpty()){
             Toast.makeText(this, "Password needed", Toast.LENGTH_SHORT).show();
             return false;
+        // conditional for if the password isn't a certain length for security
         } if (passwordInput.length()<5){
             Toast.makeText(this, "Password must be at least 5 characters", Toast.LENGTH_SHORT).show();
             return false;
         }
+        // conditional checking if the input into password and confirmpassword matches
         if (!passwordInput.equals(confirmpasswordInput)){
             Toast.makeText(this, "Password does NOT match", Toast.LENGTH_SHORT).show();
             return false;
+        // conditional if none of the other conditions are met
+            // then the validatepassword boolean is returned as true
         } else{
             Toast.makeText(this, "Password does match", Toast.LENGTH_SHORT).show();
+            // registernewuser nested within the password success conditional logic
             registerNewUser();
             return true;
         }

@@ -23,6 +23,7 @@ public class WeatherActivity extends AppCompatActivity implements View.OnClickLi
     // initialising variables
     private int conditionCode = 500;
     TextView temperatureTextView, locationTextView, mainTextView, feels_likeTextView;
+    // declaring df as desired format for temperature and feels like fields
     DecimalFormat df = new DecimalFormat("#" + "°C");
     private ImageView icon_Image_View;
     private CardView cardView;
