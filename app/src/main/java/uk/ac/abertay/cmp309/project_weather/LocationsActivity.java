@@ -97,6 +97,10 @@ public class LocationsActivity extends AppCompatActivity {
     }
 
     public void onRefreshClick(View view){
+    // refresh button is linked to the onRefreshClick method
+    /*@Override
+    protected void onResume() {
+        super.onResume();*/
 
         // initialising firebaseuID to be used as document name
         userID = mAuth.getCurrentUser().getUid();
@@ -132,7 +136,18 @@ public class LocationsActivity extends AppCompatActivity {
             }
         });
     }
-    
+    /*@Override
+    protected void onStart() {
+        super.onStart();
+
+        if (mAuth.getCurrentUser() == null) {
+            // if not logged in
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }*/
+
     public void getWeatherDetails(View view) {
 
         // initialising variables
