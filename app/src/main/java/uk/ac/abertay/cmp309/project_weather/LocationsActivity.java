@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,17 +21,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -42,9 +37,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class LocationsActivity extends AppCompatActivity {
 
@@ -106,7 +99,7 @@ public class LocationsActivity extends AppCompatActivity {
         userID = mAuth.getCurrentUser().getUid();
         // detailing db path to desired data
         Log.d(TAG, "onRefreshClick called");
-        db.collection(USERS).document(userID).collection("Locations")
+        db.collection(USERS).document(userID).collection(LOCATIONS)
                 .get()
         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -208,9 +201,6 @@ public class LocationsActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(stringRequest);
     }
-
-    // Add button would probably be an intent carrying the new desired locations weather details to the weatheractivity
-    // but also to write, read data from the firebase
 
     public void handleHomeButton(View v) {
         // Home button
